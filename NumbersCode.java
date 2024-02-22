@@ -1,2 +1,2 @@
-public class NumbersCode {
+public class NumbersCode extends SecretCode{
 }

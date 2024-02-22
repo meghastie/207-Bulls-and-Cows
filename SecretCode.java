@@ -1,2 +1,2 @@
-public class SecretCode {
+public abstract class SecretCode {
 }
