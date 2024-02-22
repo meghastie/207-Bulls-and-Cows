@@ -3,7 +3,7 @@ public class Game {
     private char[] Guess;
 
     public Game(Player p, String codeType){
-        Guess = new char[4];
+        Guess = new char[]{'\0', '\0', '\0', '\0'};
     }
 
     public Game(Player p){
@@ -42,7 +42,12 @@ public class Game {
 
     }
 
-    private boolean validateInput(String guess){
+    /*
+    Checks the Guess for empty positions and duplicate values
+
+    @return true if Guess contains none of the above
+    */
+    private boolean validateInput(){
 
         for(int i = 0; i<4; i++){
 
