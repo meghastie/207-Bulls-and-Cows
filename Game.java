@@ -1,6 +1,13 @@
 public class Game {
+
+    // New type with limited selection. To change the value of a derived object, use '[object].[value]'
+    private enum GameType{
+        TEXT, NUMBER
+    }
+
     private Player currentPlayer;
     private char[] Guess;
+    private GameType gameType;
 
     public Game(Player p, String codeType){
         Guess = new char[]{'\0', '\0', '\0', '\0'};
@@ -32,28 +39,29 @@ public class Game {
     @param position the position in the Guess array the value is being entered
     @param val the value being entered into the Guess array
     */
-    void enterGuess(int position, char val){
+    void enterGuess(int position, char val) {
 
         // Checks if given position is out of range
-        if(position < 0 || position > 4){
+        if (position < 0 || position > 4) {
             System.out.println("Invalid position!");
             return;
         }
 
-        // If Word Code
-        if(val >= 'a' && val <= 'z') {
-            Guess[position] = val;
-        }
-        else{
-            System.out.println("Must be a letter!");
-        }
-
-        // If Number Code
-        if(val >= '0' && val <= '9'){
-            Guess[position] = val;
-        }
-        else{
-            System.out.println("Must be a number!");
+        // Checks the current game type, then checks if the appropriate characters have been used
+        if (gameType.equals(GameType.TEXT)) {
+            if (val >= 'a' && val <= 'z') {
+                Guess[position] = val;
+            } else {
+                System.out.println("Must be a letter!");
+            }
+        } else if (gameType.equals(GameType.NUMBER)) {
+            if (val >= '0' && val <= '9') {
+                Guess[position] = val;
+            } else {
+                System.out.println("Must be a number!");
+            }
+        } else{
+            System.out.println("Well shit... Don't know the game type");
         }
 
         return;
@@ -64,7 +72,7 @@ public class Game {
     @return true if guess matches code
     */
     private boolean submitGuess(){
-        if(validateInput() == true){
+        if(validateInput()){
             // check if guess matches code
             // Get number of cows and bulls
         }
