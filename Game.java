@@ -30,8 +30,31 @@ public class Game {
     }
 
     void requestCode(){
-
+        
     }
+
+    void generateNumber() {
+        Random rand = new Random();
+        int min = 1000;
+        int max = 9999;
+
+        int numCode = rand.nextInt(max - min + 1) + min;
+
+        while(hasConsecutiveDigit(numCode)){
+            numCode = rand.nextInt(max - min + 1) + min;
+        }
+    }
+    private boolean hasConsecutiveDigit(int numCode) {
+        String numStr = Integer.toString(numCode);
+
+        for (int i = 0; i < 3; i++) {
+            if (numStr.charAt(i) == numCode.charAt(i + 1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /*
     Checks if given input position and value are valid for current code-type. If so, inserts it into the
