@@ -2,14 +2,9 @@ import java.util.*;
 
 public class Game {
 
-    // New type with limited selection. To change the value of a derived object, use '[object].[value]'
-    private enum GameType{
-        TEXT, NUMBER
-    }
-
     private Player currentPlayer;
     private char[] Guess;
-    private GameType gameType;
+    private SecretCode codeGame;
 
     public Game(Player p, String codeType){
         Guess = new char[]{'\0', '\0', '\0', '\0'};
@@ -105,13 +100,13 @@ public class Game {
         }
 
         // Checks the current game type, then checks if the appropriate characters have been used
-        if (gameType.equals(GameType.TEXT)) {
+        if (codeGame.getClass() == LettersCode.class) {
             if (val >= 'a' && val <= 'z') {
                 Guess[position] = val;
             } else {
                 System.out.println("Must be a letter!");
             }
-        } else if (gameType.equals(GameType.NUMBER)) {
+        } else if (codeGame.getClass() == NumbersCode.class) {
             if (val >= '0' && val <= '9') {
                 Guess[position] = val;
             } else {
