@@ -14,44 +14,93 @@ public class Game {
 
     }
 
-    void getHint(){
-
+    /*
+   Get a hint from the secret code and return
+   */
+    String getHint(){
+        return "";
     }
 
     void loadPlayer(){
 
     }
 
-    void playGame() {       // Main game loop (Noa)
-        /* SUDO CODE FOR GAME LOOP
+    /*
+    Main game loop for one "round" each time function is called
+    @param is the game type a number game? (True -> number game, False -> letter game)
+    */
+    void playGame(boolean isNumberGame) {       // Main game loop (Noa)
+        // local variables
+        boolean gameOver, validInputGiven, givenUp;
+        Scanner inputScanner;
+        String userInput;
 
-        CREATE INSTANCE OF secretCode
-        BEGIN GAME LOOP
-            SET validInputGiven AS FALSE
-            SET givenUp AS FALSE
+        // create an instance of chosen secret code
+        if (isNumberGame) {codeGame = new NumbersCode();} else {codeGame = new LettersCode();}
 
-            WHILE validInputGiven IS FALSE
-                GET userInput FROM TERMINAL
-                IF FIRST CHAR IN userInput IS "/"
-                  FOR character IN userInput (might change so user inputs one character and one position each time, or they can do both)
-                      enterGuess(characterPosition, character)
-                  END FOR
-                ELSE
-                    SWITCH STATEMENT (?) FOR userInput
-                          CASE "/guess"
-                                SET validInputGiven TO submitGuess()
-                                PRINT CONFIRMATION OR ERROR
-                          CASE "/hint"
-                                PRINT getHint()
-                          CASE "/giveup"
-                                GET "are you sure" FROM KEYBOARD
-                                IF SURE PRINT showSolution
-                                SET givenUp TO TRUE
-                                SET validInputGiven TO TRUE
-                END IF
-            END WHILE
+        gameOver = false;
+        while (!gameOver) {                                     // begin game loop
 
-         */
+            // PRINT USER COMMAND INSTRUCTIONS??
+
+            validInputGiven = false;
+            givenUp = false;
+
+            while (!validInputGiven) {                          // begin loop for making guess
+                inputScanner = new Scanner(System.in);
+                System.out.println("\n>>> ");
+                userInput = inputScanner.nextLine();
+
+                if (userInput.charAt(0) != '/') {               // input is not a user command
+                    // ALTER GUESS
+                    System.out.println("ALTERED GUESS");
+                } else {                                        // input is a user command
+                    switch (userInput.toLowerCase()) {          // cases for all user commands
+
+                        case "/guess":
+                            validInputGiven = submitGuess();
+
+                        case "/hint":
+                            System.out.println(getHint());
+
+                        case "/giveup":
+                            if (giveUpConfirmation()) {
+                                System.out.println("\nSolution: " + showSolution(codeGame));
+                                givenUp = true;
+                                validInputGiven = true;
+                            }
+                    }
+                }
+            }
+
+            // valid input has been given
+            if (givenUp) {
+                gameOver = true;
+            } else {
+                // CHECK IF GUESS IS CORRECT
+                // IF CORRECT END GAME, ELSE CONTINUE GAME
+            }
+        }
+    }
+
+    /*
+    Helper function for confirming the user wishes to give up
+     */
+    private boolean giveUpConfirmation() {
+        while (true) {
+            Scanner giveUpScan = new Scanner(System.in);
+            System.out.println("\nAre you sure you want to give up? (y or n) >>>");
+
+            String userConfirm = giveUpScan.nextLine();
+
+            if (userConfirm.compareTo("y") == 0) {
+                return true;
+            } else if (userConfirm.compareTo("n") == 0) {
+                return false;
+            } else {
+                System.out.println("\nError: Please choose y or n\n");
+            }
+        }
     }
 
     void requestCode(){
@@ -153,8 +202,8 @@ public class Game {
     @param secretCode instance
     @return solution as String
     */
-    void showSolution(SecretCode secretCode){
-        return;
+    String showSolution(SecretCode secretCode){
+        return "";
     }
 
     /*
