@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Game {
 
     // New type with limited selection. To change the value of a derived object, use '[object].[value]'
@@ -25,8 +27,36 @@ public class Game {
 
     }
 
-    void playGame(){
+    void playGame() {       // Main game loop (Noa)
+        /* SUDO CODE FOR GAME LOOP
 
+        CREATE INSTANCE OF secretCode
+        BEGIN GAME LOOP
+            SET validInputGiven AS FALSE
+            SET givenUp AS FALSE
+
+            WHILE validInputGiven IS FALSE
+                GET userInput FROM TERMINAL
+                IF FIRST CHAR IN userInput IS "/"
+                  FOR character IN userInput (might change so user inputs one character and one position each time, or they can do both)
+                      enterGuess(characterPosition, character)
+                  END FOR
+                ELSE
+                    SWITCH STATEMENT (?) FOR userInput
+                          CASE "/guess"
+                                SET validInputGiven TO submitGuess()
+                                PRINT CONFIRMATION OR ERROR
+                          CASE "/hint"
+                                PRINT getHint()
+                          CASE "/giveup"
+                                GET "are you sure" FROM KEYBOARD
+                                IF SURE PRINT showSolution
+                                SET givenUp TO TRUE
+                                SET validInputGiven TO TRUE
+                END IF
+            END WHILE
+
+         */
     }
 
     void requestCode(){
@@ -62,6 +92,10 @@ public class Game {
     @param position the position in the Guess array the value is being entered
     @param val the value being entered into the Guess array
     */
+
+    // NOA :- would it be better if this function didn't print anything, and only returned a certain value if the entered guess
+    //       was valid or not, so then the error messages are handled in the play game method, and we only need to adapt that
+    //       when we move on to a GUI? Same for validateInput method. Or are the print statements just here to test for now?
     void enterGuess(int position, char val) {
 
         // Checks if given position is out of range
@@ -118,8 +152,14 @@ public class Game {
 
     }
 
-    void showSolution(){
+    /*
+    Gets solution from secret code class and returns
 
+    @param secretCode instance
+    @return solution as String
+    */
+    void showSolution(SecretCode secretCode){
+        return;
     }
 
     /*
