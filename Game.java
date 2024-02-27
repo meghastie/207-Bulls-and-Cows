@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Game {
 
     private Player currentPlayer;
@@ -12,16 +14,93 @@ public class Game {
 
     }
 
-    void getHint(){
-
+    /*
+   Get a hint from the secret code and return
+   */
+    String getHint(){
+        return "";
     }
 
     void loadPlayer(){
 
     }
 
-    void playGame(){
+    /*
+    Main game loop for one "round" each time function is called
+    @param is the game type a number game? (True -> number game, False -> letter game)
+    */
+    void playGame(boolean isNumberGame) {       // Main game loop (Noa)
+        // local variables
+        boolean gameOver, validInputGiven, givenUp;
+        Scanner inputScanner;
+        String userInput;
 
+        // create an instance of chosen secret code
+        if (isNumberGame) {codeGame = new NumbersCode();} else {codeGame = new LettersCode();}
+
+        gameOver = false;
+        while (!gameOver) {                                     // begin game loop
+
+            // PRINT USER COMMAND INSTRUCTIONS??
+
+            validInputGiven = false;
+            givenUp = false;
+
+            while (!validInputGiven) {                          // begin loop for making guess
+                inputScanner = new Scanner(System.in);
+                System.out.println("\n>>> ");
+                userInput = inputScanner.nextLine();
+
+                if (userInput.charAt(0) != '/') {               // input is not a user command
+                    // ALTER GUESS
+                    System.out.println("ALTERED GUESS");
+                } else {                                        // input is a user command
+                    switch (userInput.toLowerCase()) {          // cases for all user commands
+
+                        case "/guess":
+                            validInputGiven = submitGuess();
+
+                        case "/hint":
+                            System.out.println(getHint());
+
+                        case "/giveup":
+                            if (giveUpConfirmation()) {
+                                System.out.println("\nSolution: " + showSolution(codeGame));
+                                givenUp = true;
+                                validInputGiven = true;
+                            }
+                    }
+                }
+            }
+
+            // valid input has been given
+            if (givenUp) {
+                gameOver = true;
+            } else {
+                // CHECK IF GUESS IS CORRECT
+                // IF CORRECT END GAME, ELSE CONTINUE GAME
+            }
+        }
+    }
+
+    /*
+    Helper function for confirming the user wishes to give up
+     */
+    private boolean giveUpConfirmation() {
+        while (true) {
+            Scanner giveUpScan = new Scanner(System.in);
+            System.out.println("\nAre you sure you want to give up? (y or n) >>>");
+
+            String userConfirm = giveUpScan.nextLine();
+
+            if (userConfirm.compareTo("y") == 0) {
+                return true;
+            } else if (userConfirm.compareTo("n") == 0) {
+                return false;
+            } else {
+                System.out.println("\nError: Please choose y or n\n");
+            }
+        }
     }
 
     void requestCode(){
@@ -57,6 +136,10 @@ public class Game {
     @param position the position in the Guess array the value is being entered
     @param val the value being entered into the Guess array
     */
+
+    // NOA :- would it be better if this function didn't print anything, and only returned a certain value if the entered guess
+    //       was valid or not, so then the error messages are handled in the play game method, and we only need to adapt that
+    //       when we move on to a GUI? Same for validateInput method. Or are the print statements just here to test for now?
     void enterGuess(int position, char val) {
 
         // Checks if given position is out of range
@@ -113,8 +196,14 @@ public class Game {
 
     }
 
-    void showSolution(){
+    /*
+    Gets solution from secret code class and returns
 
+    @param secretCode instance
+    @return solution as String
+    */
+    String showSolution(SecretCode secretCode){
+        return "";
     }
 
     /*
