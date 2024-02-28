@@ -9,7 +9,7 @@ public class Game {
     private SecretCode codeGame;
 
     public Game(Player p, String codeType){
-        Guess = new char[]{'\0', '\0', '\0', '\0'};
+        resetGuess();
     }
 
     public Game(Player p){
@@ -17,7 +17,7 @@ public class Game {
     }
 
     public Game(){
-        Guess = new char[]{'\0', '\0', '\0', '\0'};
+        resetGuess();
         //default to number game
         //playGame(true);
     }
@@ -34,10 +34,17 @@ public class Game {
     }
 
     /*
+    Resets the current guess for making a new guess
+     */
+    void resetGuess() {
+        Guess = new char[]{'\0', '\0', '\0', '\0'};
+    }
+
+    /*
     Main game loop for one "round" each time function is called
     @param is the game type a number game? (True -> number game, False -> letter game)
     */
-    void playGame(boolean isNumberGame) {       // Main game loop (Noa)
+    void playGame(boolean isNumberGame) {                       // Main game loop (Noa)
         // local variables
         boolean gameOver, validInputGiven, givenUp;
         Scanner inputScanner;
@@ -60,8 +67,7 @@ public class Game {
                 userInput = inputScanner.nextLine();
 
                 if (userInput.charAt(0) != '/') {               // input is not a user command
-                    // ALTER GUESS
-                    System.out.println("ALTERED GUESS");
+                    // CHANGE PART OF CURRENT GUESS
                 } else {                                        // input is a user command
                     switch (userInput.toLowerCase()) {          // cases for all user commands
 
@@ -73,7 +79,7 @@ public class Game {
 
                         case "/giveup":
                             if (giveUpConfirmation()) {
-                                System.out.println("\nSolution: " + showSolution(codeGame));
+                                // SHOW SOLUTION -> System.out.println("\nSolution: " + showSolution(codeGame)); (?)
                                 givenUp = true;
                                 validInputGiven = true;
                             }
@@ -82,13 +88,13 @@ public class Game {
             }
 
             // valid input has been given
+
             if (givenUp) {
                 gameOver = true;
-            } else {
-                // CHECK IF GUESS IS CORRECT
-                // IF CORRECT END GAME, ELSE CONTINUE GAME
             }
         }
+
+        System.out.println("GAME FINISHED");
     }
 
     /*
@@ -184,6 +190,10 @@ public class Game {
     Validates input and passes guess off to be checked
     @return true if guess matches code
     */
+
+    // NOA :- should submitGuess return whether the guess was correct in some other way? As it is now it will return
+    //        True if the guess was correct, and False if anything else. Could we have it so it returns 0 if the guess
+    //        was correct, 1 if it was incorrect, and -1 if it wasn't a valid input (just as an example)?
     private boolean submitGuess(){
         if(validateInput()){
             // check if guess matches code
