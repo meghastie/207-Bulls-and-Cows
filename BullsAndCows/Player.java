@@ -1,3 +1,5 @@
+package BullsAndCows;
+
 public class Player {
 
     private String username;
