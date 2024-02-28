@@ -115,32 +115,6 @@ public class Game {
         
     }
 
-    void generateNumber() {
-        Random rand = new Random();
-        int min = 1000;
-        int max = 9999;
-
-        int numCode = rand.nextInt(max - min + 1) + min;
-
-        while(hasDuplicateCharacter(Integer.toString(numCode))) {
-            numCode = rand.nextInt(max - min + 1) + min;
-        }
-    }
-    /*
-    Check if a given secret code has duplicate letter or number
-     */
-    public static boolean hasDuplicateCharacter(String code) {
-        for (int i = 0; i < code.length(); i++) {
-            for(int j = i+1; j<code.length(); j++) {
-                if (code.charAt(i) == code.charAt(j)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
     /*
     Checks if given input position and value are valid for current code-type. If so, inserts it into the
     guess array at corresponding position
