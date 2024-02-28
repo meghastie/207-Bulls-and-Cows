@@ -19,7 +19,7 @@ public class Game {
     public Game(){
         Guess = new char[]{'\0', '\0', '\0', '\0'};
         //default to number game
-        playGame(true);
+        //playGame(true);
     }
 
     /*
@@ -122,14 +122,14 @@ public class Game {
 
         int numCode = rand.nextInt(max - min + 1) + min;
 
-        while(hasConsecutiveCharacters(Integer.toString(numCode))) {
+        while(hasDuplicateCharacter(Integer.toString(numCode))) {
             numCode = rand.nextInt(max - min + 1) + min;
         }
     }
     /*
     Check if a given secret code has duplicate letter or number
      */
-    private boolean hasConsecutiveCharacters(String code) {
+    public static boolean hasDuplicateCharacter(String code) {
         for (int i = 0; i < code.length(); i++) {
             for(int j = i+1; j<code.length(); j++) {
                 if (code.charAt(i) == code.charAt(j)) {
@@ -161,6 +161,7 @@ public class Game {
 
         // Checks the current game type, then checks if the appropriate characters have been used
         if (codeGame.getClass() == LettersCode.class) {
+            val = Character.toLowerCase(val);
             if (val >= 'a' && val <= 'z') {
                 Guess[position] = val;
             } else {
@@ -233,6 +234,7 @@ public class Game {
             }
 
             // Checks for duplicate values
+            //can use hasduplicatemethod for this
             for (int j = i + 1; j<4; j++) {
                 if (Guess[i] == Guess[j]) {
                     System.out.println("Duplicate value present at positions " + i + " & " + j);
