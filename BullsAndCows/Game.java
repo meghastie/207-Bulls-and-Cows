@@ -108,11 +108,10 @@ public class Game {
             }
 
             // valid input has been given
+            gameOver = givenUp;
 
             if (!givenUp) {
                 submitGuess();
-            } else {
-                gameOver = true;
             }
         }
 
