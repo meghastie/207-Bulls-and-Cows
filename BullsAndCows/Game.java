@@ -4,16 +4,19 @@ import java.util.*;
 
 public class Game {
 
+
+
     private Player currentPlayer;
     private char[] Guess;
     private SecretCode codeGame;
 
     public Game(Player p, String codeType){
+        this.currentPlayer = p;
         resetGuess();
     }
 
     public Game(Player p){
-
+        this.currentPlayer = p;
     }
 
     public Game(){
@@ -184,8 +187,12 @@ public class Game {
     /*
     Checks if given input position and value are valid for current code-type. If so, inserts it into the
     guess array at corresponding position
-    @param position the position in the Guess array the value is being entered
-    @param val the value being entered into the Guess array
+    @param position The position in the Guess array the value is being entered
+    @param val      The value being entered into the Guess array
+
+    @throws ArrayIndexOutOfBoundsException If the given position does not exist in the Guess array
+    @throws IllegalArgumentException       If the given value is not acceptable for the given code type
+    @throws RuntimeException               If codeGame exists as neither types of subclass
     */
 
     // NOA :- would it be better if this function didn't print anything, and only returned a certain value if the entered guess
@@ -195,8 +202,7 @@ public class Game {
 
         // Checks if given position is out of range
         if (position < 0 || position > 4) {
-            System.out.println("Invalid position!");
-            return;
+            throw new ArrayIndexOutOfBoundsException();
         }
 
         // Checks the current game type, then checks if the appropriate characters have been used
@@ -205,19 +211,17 @@ public class Game {
             if (val >= 'a' && val <= 'z') {
                 Guess[position] = val;
             } else {
-                System.out.println("Must be a letter!");
+                throw new IllegalArgumentException("Value must be a letter");
             }
         } else if (codeGame.getClass() == NumbersCode.class) {
             if (val >= '0' && val <= '9') {
                 Guess[position] = val;
             } else {
-                System.out.println("Must be a number!");
+                throw new IllegalArgumentException("Value must be a number");
             }
         } else{
-            System.out.println("Well shit... Don't know the game type");
+            throw new RuntimeException("Neither word nor number base code identified");
         }
-
-        return;
     }
 
     /*
@@ -230,8 +234,16 @@ public class Game {
     //        was correct, 1 if it was incorrect, and -1 if it wasn't a valid input (just as an example)?
     private boolean submitGuess(){
         if(validateInput()){
-            // check if guess matches code
-            // Get number of cows and bulls
+            int[] bullsCows = codeGame.compareCode(Guess);
+            System.out.println("Bulls: " + bullsCows[0]);
+            System.out.println("Cows: " + bullsCows[1]);
+
+            currentPlayer.updateBulls(bullsCows[0]);
+            currentPlayer.updateCows(bullsCows[1]);
+
+            if (bullsCows[0]==4) {
+                return true;
+            }
         }
         return false;
     }
