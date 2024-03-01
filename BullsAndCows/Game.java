@@ -62,14 +62,6 @@ public class Game {
         Scanner inputScanner;
         String userInput;
 
-        String[] guessErrors = {
-                "GUESS ALTERED",
-                "\nGuess contains an invalid position, all other guess changes processed.\n",
-                "\nGuess contains an invalid guess value, all other guess changes processed.\n",
-                "\nGuess contains more than one error, all other guess changes processed.\n",
-                "\nGuess contains incorrect formatting, guess change processing stopped.\n"
-        };
-
         String instructions =   "\nHOW TO PLAY\n\nYou are tasked with deciphering a secret code, consisting of either 4 different numbers or " +
                                 "letters.\nEach guess you make, you will be shown how many 'Bulls' and 'Cows' you managed to get, meaning how " +
                                 "many numbers / letters you got correct & in the right position, and how many you just got correct, " +
@@ -96,11 +88,11 @@ public class Game {
                 userInput = inputScanner.nextLine();            // receive input
 
                 if (userInput.charAt(0) != '/') {               // input is not a user command
-                    int guessReturn = inputGuessChange(userInput);
-                    if (guessReturn == -1) {
-                        System.out.println("\nFATAL ERROR");    // error with classes, or other error
+                    ArrayList<String> completedChanges = inputGuessChange(userInput);
+                    if (completedChanges.isEmpty()) {
+                        System.out.println("\nNo changes completed, maybe input had incorrect format?");
                     } else {
-                        System.out.println(guessErrors[guessReturn]);
+                        System.out.println(completedChanges);
                     }
                 } else {                                        // input is a user command
 
@@ -144,30 +136,32 @@ public class Game {
 
     /*
     Check if the user input is valid for changing the guess, any invalid inputs are skipped
-    @return -1 if classes contain errors, 0 if input is a valid change, 1 if has invalid position, 2 if has invalid val, 3 if more than one error total, 4 if invalid format
+    @return array list of completed changes
      */
-    int inputGuessChange(String userInput) {
+    ArrayList<String> inputGuessChange(String userInput) {
         if (userInput.contains(" ") || userInput.contains("-") || userInput.length() < 2 || (userInput.length() > 2 && userInput.length() % 3 != 0)) {
-            return 4;
+            return new ArrayList<>();
         }
 
-        int returnValue = 0;
+        ArrayList<String> completed = new ArrayList<>();
 
-        for (int i = 0; i < userInput.length() - 3; i += 3) {
+        for (int i = 0; i < userInput.length(); i += 3) {       // MIGHT NEED SOME CHANGES WITH TESTING TO MAKE SURE INCLUDE length() = 2
             char inputChangeChar = userInput.charAt(i);
             int inputChangePos = (int) userInput.charAt(i + 1) - 1;
-            int guessValidation = enterGuess(inputChangePos, inputChangeChar);
 
-            if (guessValidation != 0) {
-                if (returnValue == 0) {
-                    returnValue = guessValidation;
-                } else {
-                    returnValue = 3;
-                }
+            try {
+                enterGuess(inputChangePos, inputChangeChar);
+                completed.add(userInput.substring(i, i+2));
+            } catch (ArrayIndexOutOfBoundsException err) {
+                // STUFF
+            } catch (IllegalArgumentException err) {
+                //MORE STUFF
+            } catch (RuntimeException err) {
+                // EVEN MORE STUFF
             }
         }
 
-        return returnValue;
+        return completed;
     }
 
     /*
@@ -226,7 +220,7 @@ public class Game {
     @throws IllegalArgumentException       If the given value is not acceptable for the given code type
     @throws RuntimeException               If codeGame exists as neither types of subclass
     */
-    int enterGuess(int position, char val) {
+    void enterGuess(int position, char val) {
         // Checks if given position is out of range
         if (position < 0 || position > 4) {
             throw new ArrayIndexOutOfBoundsException();
@@ -244,10 +238,10 @@ public class Game {
             if (val >= '0' && val <= '9') {
                 Guess[position] = val;
             } else {
-                System.out.println("Must be a number!");
+                throw new IllegalArgumentException("Value must be a Number");
             }
         } else{
-            System.out.println("Well shit... Don't know the game type");
+            throw new RuntimeException("codeGame exists as neither Subclass");
         }
     }
 
