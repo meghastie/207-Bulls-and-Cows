@@ -31,17 +31,18 @@ public class LettersCode extends SecretCode{
     }
 
     //chooses a random index 0-14. the random index will correspond to one of the 15 words in the file
-    public String chooseWord() {
+    @Override
+    public char[] generateCode() {
 
         if (word.isEmpty()) {
             System.out.println("Word arraylist is empty - please fill");
-            return "NULL";
+            return new char[] {'N','U','L','L'};
         }
 
         Random rand = new Random();
         int randIndex = rand.nextInt(word.size());
         gameWord = word.get(randIndex);
 
-        return gameWord;
+        return gameWord.toCharArray();
     }
 }
