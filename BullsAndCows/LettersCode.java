@@ -26,6 +26,10 @@ public class LettersCode extends SecretCode{
         }
     }
 
+    public LettersCode(char[] code){
+        gameWord = new String (code);
+    }
+
     public LettersCode(){
         gameWord = "NULL";
     }
@@ -44,5 +48,9 @@ public class LettersCode extends SecretCode{
         gameWord = word.get(randIndex);
 
         return gameWord.toCharArray();
+    }
+
+    public List<String> getWord(){
+        return word;
     }
 }

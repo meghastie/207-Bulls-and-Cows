@@ -11,9 +11,14 @@ class GameTest extends Game{
     }
 
     @Test
-    void hasDuplicateCharacter(){
+    void inputGuessChange() {
 
     }
+    @Test
+    void giveUpConfirmation(){
+
+    }
+
     @Test
     void enterGuess(){
 
@@ -24,6 +29,10 @@ class GameTest extends Game{
 
     }
 
+    @Test
+    void submitGuess(){
+
+    }
 
     @AfterEach
     void tearDown() {
