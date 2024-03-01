@@ -32,9 +32,9 @@ class LettersCodeTest {
     void compareCode(){
         //valid guess
         char[] word = code.generateCode();
-        assertEquals(new int[] {4,0}, code.compareCode(word));
+        assertArrayEquals(code.compareCode(word), new int[]{4, 0});
         //invalid guess right format
-        assertEquals(new int[] {2,2}, setCode.compareCode(new char[] {'b','l','m','i'}));
+        assertArrayEquals(setCode.compareCode("blmi".toCharArray()), new int[]{2, 2});
         //invalid guess wrong format
 
     }

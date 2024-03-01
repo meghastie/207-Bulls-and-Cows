@@ -7,12 +7,13 @@ import java.util.*;
 public class LettersCode extends SecretCode{
 
     private List<String> word = new ArrayList<String>(); //holds the 15 options of words from file
-    String gameWord; //the random word chosen for the game
+    //String gameWord the random word chosen for the game
+    //code storage is already part of secret code
 
 
     //words from the file are parsed into the arrayList 'word'
     public LettersCode(String file){
-        gameWord = "NULL";
+        code = "NULL".toCharArray();
         try {
         Scanner scanner = new Scanner(new File(file));
         while (scanner.hasNext()) {
@@ -27,11 +28,12 @@ public class LettersCode extends SecretCode{
     }
 
     public LettersCode(char[] code){
-        gameWord = new String (code);
+        this.code = code;
+
     }
 
     public LettersCode(){
-        gameWord = "NULL";
+        code = "NULL".toCharArray();
     }
 
     //chooses a random index 0-14. the random index will correspond to one of the 15 words in the file
@@ -45,9 +47,9 @@ public class LettersCode extends SecretCode{
 
         Random rand = new Random();
         int randIndex = rand.nextInt(word.size());
-        gameWord = word.get(randIndex);
+        code = word.get(randIndex).toCharArray();
 
-        return gameWord.toCharArray();
+        return code;
     }
 
     public List<String> getWord(){
