@@ -4,8 +4,6 @@ import java.util.*;
 
 public class Game {
 
-
-
     private Player currentPlayer;
     private char[] Guess;
     private SecretCode codeGame;
@@ -44,6 +42,14 @@ public class Game {
     }
 
     /*
+    Formats the array as a string to output
+    @return formatted string of Guess array
+     */
+    String showGuess() {
+        return "[ " + Guess[0] + " ] [ " + Guess[1] + " ] [ " + Guess[2] + " ] [ " + Guess[3] + " ]";
+    }
+
+    /*
     Main game loop for one "round" each time function is called
     @param is the game type a number game? (True -> number game, False -> letter game)
     */
@@ -64,7 +70,8 @@ public class Game {
                                 "change more than one position at a time, simply enter a comma followed by your next guess, e.g. a4,g1,h3. Note " +
                                 "there are no spaces\nOther commands are as follows:\n\n\t/hint -\tIf you are stuck, receive a hint for your " +
                                 "guess\n\t/giveup -\t If you are really stuck, you can give up and see the solution\n\t/guess -\tSubmit your " +
-                                "completed guess, all positions of your guess must be filled.";
+                                "completed guess, all positions of your guess must be filled.\n\t/undo -\t If you want to remove a " +
+                                "change you've made to your guess.";
 
         // create an instance of chosen secret code
         if (isNumberGame) {codeGame = new NumbersCode();} else {codeGame = new LettersCode();}
@@ -72,25 +79,24 @@ public class Game {
         gameOver = false;
         while (!gameOver) {                                     // begin game loop
 
-            // PRINT USER COMMAND INSTRUCTIONS??
-
             finishInputGuess = false;
             givenUp = false;
 
             while (!finishInputGuess) {                          // begin loop for making guess
                 inputScanner = new Scanner(System.in);
-                System.out.println("\n>>> ");
-                userInput = inputScanner.nextLine();
+                System.out.println("Current Guess: " + showGuess() + "\n>>> ");
+                userInput = inputScanner.nextLine();            // receive input
 
                 if (userInput.charAt(0) != '/') {               // input is not a user command
-                    if (inputGuessChange(userInput)) {
-                        System.out.println("\nGUESS ALTERED CORRECTLY");
+                    ArrayList<String> completedChanges = inputGuessChange(userInput);
+                    if (completedChanges.isEmpty()) {
+                        System.out.println("\nNo changes completed, maybe input had incorrect format?");
                     } else {
-                        System.out.println("\nInput has incorrect format for changing guess. Try /help to read the instructions, and try again.\n");
+                        System.out.println(completedChanges);
                     }
                 } else {                                        // input is a user command
-                    switch (userInput.toLowerCase()) {          // cases for all user commands
 
+                    switch (userInput.toLowerCase()) {          // cases for all user commands
                         case "/help":
                             System.out.println(instructions);
 
@@ -105,6 +111,13 @@ public class Game {
                                 // SHOW SOLUTION -> System.out.println("\nSolution: " + showSolution(codeGame)); (?)
                                 givenUp = true;
                                 finishInputGuess = true;
+                            }
+
+                        case "/undo":
+                            if (undoConfirmation()) {
+                                System.out.println("\nUNDO CONFIRMED");
+                            } else {
+                                System.out.println("\nUNDO CANCELLED");
                             }
                     }
                 }
@@ -122,48 +135,39 @@ public class Game {
     }
 
     /*
-    Check if the user input is valid for changing the guess, should be of form " <letter><number> " followed by
-        a comma if more than one guess at a time
-    @return True if valid change to guess, and the guess is changed, False if not valid
+    Check if the user input is valid for changing the guess, any invalid inputs are skipped
+    @return array list of completed changes
      */
-    boolean inputGuessChange(String userInput) {
+    ArrayList<String> inputGuessChange(String userInput) {
         if (userInput.contains(" ") || userInput.contains("-") || userInput.length() < 2 || (userInput.length() > 2 && userInput.length() % 3 != 0)) {
-            return false;
-        } else if (userInput.length() == 2) {
-            alterGuess(userInput.charAt(0), (int) userInput.charAt(1));
-            return true;
+            return new ArrayList<>();
         }
 
-        for (int i = 0; i < userInput.length() - 3; i += 3) {
-            char inputChangeChar = userInput.toLowerCase().charAt(i);             // ARE LETTERS LOWER CASE OR UPPER CASE IN SECRET CODE??
+        ArrayList<String> completed = new ArrayList<>();
+
+        for (int i = 0; i < userInput.length(); i += 3) {       // MIGHT NEED SOME CHANGES WITH TESTING TO MAKE SURE INCLUDE length() = 2
+            char inputChangeChar = userInput.charAt(i);
             int inputChangePos = (int) userInput.charAt(i + 1) - 1;
 
-            if (inputChangePos >= 0 && inputChangePos <= 3) {                     // if valid position
-                // vvv valid guess characters according to game type vvv
-                if (codeGame.getClass() == LettersCode.class && (int) inputChangeChar >= 97 && (int) inputChangeChar <= 122) {
-                    alterGuess(inputChangeChar, inputChangePos);
-                } else if ((codeGame.getClass() == NumbersCode.class && (int) inputChangeChar <= 9)) {
-                    alterGuess(inputChangeChar, inputChangePos);
-                }
-            } else {
-                return false;
+            try {
+                enterGuess(inputChangePos, inputChangeChar);
+                completed.add(userInput.substring(i, i+2));
+            } catch (ArrayIndexOutOfBoundsException err) {
+                // STUFF
+            } catch (IllegalArgumentException err) {
+                //MORE STUFF
+            } catch (RuntimeException err) {
+                // EVEN MORE STUFF
             }
         }
-        return true;
-    }
 
-    /*
-    Alters the current guess according to the values given
-    Values should always be valid BEFORE calling this function
-    */
-    void alterGuess(char guessChar, int guessPosition) {
-        Guess[guessPosition] = guessChar;
+        return completed;
     }
 
     /*
     Helper function for confirming the user wishes to give up
      */
-    private boolean giveUpConfirmation() {
+    boolean giveUpConfirmation() {
         while (true) {
             Scanner giveUpScan = new Scanner(System.in);
             System.out.println("\nAre you sure you want to give up? (y / n) >>>");
@@ -176,6 +180,28 @@ public class Game {
                 return false;
             } else {
                 System.out.println("\nError: Please choose y / n\n");
+            }
+        }
+    }
+
+    /*
+    Helper function for confirming the user wishes to give up
+     */
+    boolean undoConfirmation() {
+        while (true) {
+            Scanner undoScan = new Scanner(System.in);
+            System.out.println("\nWhat position of your guess do you wish to remove? >>>");
+
+            String undoPos = undoScan.nextLine();
+            if (undoPos.compareTo("") == 0) {
+                return false;
+            }
+
+            if (Integer.parseInt(undoPos) >= 1 && Integer.parseInt(undoPos) <= 4) {
+                undoGuess(Integer.parseInt(undoPos) - 1);
+                return true;
+            } else {
+                System.out.println("\nError: Please choose a position between 1 and 4, or press ENTER to exit\n");
             }
         }
     }
@@ -194,12 +220,7 @@ public class Game {
     @throws IllegalArgumentException       If the given value is not acceptable for the given code type
     @throws RuntimeException               If codeGame exists as neither types of subclass
     */
-
-    // NOA :- would it be better if this function didn't print anything, and only returned a certain value if the entered guess
-    //       was valid or not, so then the error messages are handled in the play game method, and we only need to adapt that
-    //       when we move on to a GUI? Same for validateInput method. Or are the print statements just here to test for now?
     void enterGuess(int position, char val) {
-
         // Checks if given position is out of range
         if (position < 0 || position > 4) {
             throw new ArrayIndexOutOfBoundsException();
@@ -217,10 +238,10 @@ public class Game {
             if (val >= '0' && val <= '9') {
                 Guess[position] = val;
             } else {
-                throw new IllegalArgumentException("Value must be a number");
+                throw new IllegalArgumentException("Value must be a Number");
             }
         } else{
-            throw new RuntimeException("Neither word nor number base code identified");
+            throw new RuntimeException("codeGame exists as neither Subclass");
         }
     }
 
@@ -228,10 +249,6 @@ public class Game {
     Validates input and passes guess off to be checked
     @return true if guess matches code
     */
-
-    // NOA :- should submitGuess return whether the guess was correct in some other way? As it is now it will return
-    //        True if the guess was correct, and False if anything else. Could we have it so it returns 0 if the guess
-    //        was correct, 1 if it was incorrect, and -1 if it wasn't a valid input (just as an example)?
     private boolean submitGuess(){
         if(validateInput()){
             int[] bullsCows = codeGame.compareCode(Guess);
