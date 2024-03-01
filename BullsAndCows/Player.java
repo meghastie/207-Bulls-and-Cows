@@ -12,12 +12,22 @@ public class Player {
 
     }
 
-    void updateBulls(){
+    /*
+    Increases the number of Bulls by the given amount
 
+    @param Bulls The number of bulls added to the total
+     */
+    void updateBulls(int Bulls){
+        numberOfBulls = numberOfBulls + Bulls;
     }
 
-    void updateCows(){
+    /*
+    Increases the number of Cows by the given amount
 
+    @param Cows The number of cows added to the total
+     */
+    void updateCows(int Cows){
+        numberOfCows = numberOfCows + Cows;
     }
 
     void incrementCodesAttempted(){

@@ -9,11 +9,12 @@ public class Game {
     private SecretCode codeGame;
 
     public Game(Player p, String codeType){
+        this.currentPlayer = p;
         resetGuess();
     }
 
     public Game(Player p){
-
+        this.currentPlayer = p;
     }
 
     public Game(){
@@ -218,14 +219,17 @@ public class Game {
     /*
     Checks if given input position and value are valid for current code-type. If so, inserts it into the
     guess array at corresponding position
-    @return 0 if valid change, 1 if invalid position, 2 if invalid val
-    @param position the position in the Guess array the value is being entered
-    @param val the value being entered into the Guess array
+    @param position The position in the Guess array the value is being entered
+    @param val      The value being entered into the Guess array
+
+    @throws ArrayIndexOutOfBoundsException If the given position does not exist in the Guess array
+    @throws IllegalArgumentException       If the given value is not acceptable for the given code type
+    @throws RuntimeException               If codeGame exists as neither types of subclass
     */
     int enterGuess(int position, char val) {
         // Checks if given position is out of range
         if (position < 0 || position > 4) {
-            return 1;
+            throw new ArrayIndexOutOfBoundsException();
         }
 
         // Checks the current game type, then checks if the appropriate characters have been used
@@ -233,19 +237,18 @@ public class Game {
             val = Character.toLowerCase(val);
             if (val >= 'a' && val <= 'z') {
                 Guess[position] = val;
-                return 0;
+            } else {
+                throw new IllegalArgumentException("Value must be a letter");
             }
-            return 2;
-
         } else if (codeGame.getClass() == NumbersCode.class) {
             if (val >= '0' && val <= '9') {
                 Guess[position] = val;
-                return 0;
+            } else {
+                System.out.println("Must be a number!");
             }
-            return 2;
+        } else{
+            System.out.println("Well shit... Don't know the game type");
         }
-
-        return -1; // big error, cant find the game type
     }
 
     /*
@@ -254,8 +257,16 @@ public class Game {
     */
     private boolean submitGuess(){
         if(validateInput()){
-            // check if guess matches code
-            // Get number of cows and bulls
+            int[] bullsCows = codeGame.compareCode(Guess);
+            System.out.println("Bulls: " + bullsCows[0]);
+            System.out.println("Cows: " + bullsCows[1]);
+
+            currentPlayer.updateBulls(bullsCows[0]);
+            currentPlayer.updateCows(bullsCows[1]);
+
+            if (bullsCows[0]==4) {
+                return true;
+            }
         }
         return false;
     }
