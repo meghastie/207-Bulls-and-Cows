@@ -7,7 +7,7 @@ public abstract class SecretCode {
         this.code = savedCode;
     }
     SecretCode(){
-        //this.code = generateCode();
+        this.code = generateCode();
     }
 
     abstract char[] generateCode();

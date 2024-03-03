@@ -13,7 +13,7 @@ class LettersCodeTest {
     LettersCode setCode;
     @BeforeEach
     void getCodes(){
-        code = new LettersCode("./BullsAndCows/words.txt");
+        code = new LettersCode();
         setCode = new LettersCode(new char[] {'b','l','i','m'});
     }
 
