@@ -6,33 +6,26 @@ import java.util.*;
 
 public class LettersCode extends SecretCode{
 
+    final String filePath = "./words.txt";
     private List<String> word = new ArrayList<String>(); //holds the 15 options of words from file
-    String gameWord; //the random word chosen for the game
+    //String gameWord the random word chosen for the game
+    //code storage is already part of secret code
 
 
     //words from the file are parsed into the arrayList 'word'
-    public LettersCode(String file){
-        gameWord = "NULL";
-        try {
-        Scanner scanner = new Scanner(new File(file));
-        while (scanner.hasNext()) {
-            String line = scanner.next();
-            word.add(line.trim());
-        }
-        scanner.close();
-        }
-        catch (FileNotFoundException e) {
-            System.err.println("File not found");
-        }
+    public LettersCode(){
+        super();
     }
 
-    public LettersCode(){
-        gameWord = "NULL";
+    public LettersCode(char[] code){
+        super(code);
+        populateWordList();
     }
 
     //chooses a random index 0-14. the random index will correspond to one of the 15 words in the file
     @Override
     public char[] generateCode() {
+        populateWordList();
 
         if (word.isEmpty()) {
             System.out.println("Word arraylist is empty - please fill");
@@ -41,8 +34,25 @@ public class LettersCode extends SecretCode{
 
         Random rand = new Random();
         int randIndex = rand.nextInt(word.size());
-        gameWord = word.get(randIndex);
 
-        return gameWord.toCharArray();
+        return word.get(randIndex).toCharArray();
+    }
+
+    public List<String> getWord(){
+        return word;
+    }
+
+    private void populateWordList(){
+        try {
+            Scanner scanner = new Scanner(new File(filePath));
+            while (scanner.hasNext()) {
+                String line = scanner.next();
+                word.add(line.trim());
+            }
+            scanner.close();
+        }
+        catch (FileNotFoundException e) {
+            System.err.println("File not found");
+        }
     }
 }

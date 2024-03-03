@@ -6,7 +6,6 @@ public abstract class SecretCode {
     SecretCode(char[] savedCode){
         this.code = savedCode;
     }
-
     SecretCode(){
         this.code = generateCode();
     }

@@ -8,7 +8,7 @@ public class NumbersCode extends SecretCode {
     }
 
 
-    private String generateNumber() {
+    public char[] generateCode() {
         Random rand = new Random();
         int min = 1000;
         int max = 9999;
@@ -20,7 +20,7 @@ public class NumbersCode extends SecretCode {
             numCode = rand.nextInt(max - min + 1) + min;
             code = Integer.toString(numCode);               //converts integer to string
         }
-        return code;
+        return code.toCharArray();
     }
 
     /*

@@ -18,4 +18,14 @@ class NumbersCodeTest {
             assertFalse(NumbersCode.hasDuplicateCharacter(s));
         }
     }
+
+    @Test
+    void generateCode(){
+
+    }
+
+    @Test
+    void compareCode(){
+
+    }
 }

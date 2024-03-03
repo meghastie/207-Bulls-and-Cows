@@ -315,7 +315,6 @@ public class Game {
             }
 
             // Checks for duplicate values
-            //can use hasduplicatemethod for this
             for (int j = i + 1; j<4; j++) {
                 if (Guess[i] == Guess[j]) {
                     System.out.println("Duplicate value present at positions " + i + " & " + j);
