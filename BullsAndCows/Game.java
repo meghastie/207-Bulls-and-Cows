@@ -55,7 +55,7 @@ public class Game {
     */
     void playGame(boolean isNumberGame) {                       // Main game loop (Noa)
         // introduce game
-        System.out.println("\n\nWelcome to Bulls and Cows. Please alter and submit your guess, or type /help for instructions of how to play.\n");
+        System.out.println("\n\nWelcome to Bulls and Cows. Please alter and submit your guess, or type /help for instructions of how to play.");
 
         // local variables
         boolean gameOver, finishInputGuess, givenUp;
@@ -84,7 +84,7 @@ public class Game {
 
             while (!finishInputGuess) {                          // begin loop for making guess
                 inputScanner = new Scanner(System.in);
-                System.out.println("Current Guess: " + showGuess() + "\n>>> ");
+                System.out.println("\n\nCurrent Guess: " + showGuess() + "\n>>> ");
                 userInput = inputScanner.nextLine();            // receive input
 
                 if (userInput.charAt(0) != '/') {               // input is not a user command
@@ -92,9 +92,9 @@ public class Game {
                     if (completedChanges.isEmpty()) {
                         System.out.println("\nNo changes completed, maybe input had incorrect format?");
                     } else {
-                        System.out.println(completedChanges);
+                        System.out.println("\nChanges completed: " + completedChanges);
                     }
-                } else {                                        // input is a user command
+                } else {                                        // input is a user command, or invalid
 
                     switch (userInput.toLowerCase()) {          // cases for all user commands
                         case "/help":
@@ -108,7 +108,7 @@ public class Game {
 
                         case "/giveup":
                             if (giveUpConfirmation()) {
-                                // SHOW SOLUTION -> System.out.println("\nSolution: " + showSolution(codeGame)); (?)
+                                System.out.println("\nSolution: " + showSolution(codeGame));
                                 givenUp = true;
                                 finishInputGuess = true;
                             }
@@ -119,6 +119,9 @@ public class Game {
                             } else {
                                 System.out.println("\nUNDO CANCELLED");
                             }
+
+                        default:                                // case when input is not recognised
+                            System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
                     }
                 }
             }
@@ -127,7 +130,12 @@ public class Game {
             gameOver = givenUp;
 
             if (!givenUp) {
-                submitGuess();
+                if(submitGuess()) {
+                    System.out.println("\nYOUR GUESS WAS CORRECT!!!");
+                    gameOver = true;
+                } else {
+                    System.out.println("\nYOUR GUESS WAS INCORRECT, TRY AGAIN");
+                }
             }
         }
 
@@ -153,11 +161,11 @@ public class Game {
                 enterGuess(inputChangePos, inputChangeChar);
                 completed.add(userInput.substring(i, i+2));
             } catch (ArrayIndexOutOfBoundsException err) {
-                // STUFF
+                System.out.println("\nError in changing guess: Position '" + inputChangePos + "' was not a valid position.");
             } catch (IllegalArgumentException err) {
-                //MORE STUFF
+                System.out.println("\nError in changing guess: " + err);
             } catch (RuntimeException err) {
-                // EVEN MORE STUFF
+                System.out.println("\nError in classes: " + err);
             }
         }
 
