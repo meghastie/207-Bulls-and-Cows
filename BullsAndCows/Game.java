@@ -7,6 +7,7 @@ public class Game {
     private Player currentPlayer;
     private char[] Guess;
     private SecretCode codeGame;
+    Scanner inputScanner;
 
     public Game(Player p, String codeType){
         this.currentPlayer = p;
@@ -19,6 +20,7 @@ public class Game {
 
     public Game(){
         resetGuess();
+        inputScanner = new Scanner(System.in);
         playGame();
     }
 
@@ -58,7 +60,6 @@ public class Game {
 
         // local variables
         boolean gameOver, finishInputGuess, givenUp;
-        Scanner inputScanner;
         String userInput;
 
         String instructions =   "\nHOW TO PLAY\n\nYou are tasked with deciphering a secret code, consisting of either 4 different numbers or " +
@@ -78,12 +79,11 @@ public class Game {
 
         gameOver = false;
         while (!gameOver) {                                     // begin game loop
-
             finishInputGuess = false;
             givenUp = false;
 
             while (!finishInputGuess) {                          // begin loop for making guess
-                inputScanner = new Scanner(System.in);
+                //inputScanner = new Scanner(System.in);
                 System.out.println("\n\nCurrent Guess: " + showGuess() + "\n>>> ");
                 userInput = inputScanner.nextLine();            // receive input
 
@@ -173,13 +173,12 @@ public class Game {
         return completed;
     }
 
-    private void gameSelection(){
+    public void gameSelection(){
         boolean check = true;
-        Scanner scanner;
         while(check){
-            scanner = new Scanner(System.in);
+            //inputScanner = new Scanner(System.in);
             System.out.println("What type of game do you want ot play? number or letter?");
-            String input = scanner.nextLine().toLowerCase();
+            String input = inputScanner.nextLine().toLowerCase();
             switch(input){
                 case "help":
                     System.out.println("Possible commands\n" +
@@ -207,10 +206,9 @@ public class Game {
      */
     private boolean giveUpConfirmation() {
         while (true) {
-            Scanner giveUpScan = new Scanner(System.in);
             System.out.println("\nAre you sure you want to give up? (y / n) >>>");
 
-            String userConfirm = giveUpScan.nextLine();
+            String userConfirm = inputScanner.nextLine();
 
             if (userConfirm.compareTo("y") == 0) {
                 return true;
