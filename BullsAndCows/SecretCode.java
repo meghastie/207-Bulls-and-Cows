@@ -1,13 +1,17 @@
 package BullsAndCows;
 
 public abstract class SecretCode {
-    private char[] code;
+    char[] code;
 
     SecretCode(char[] savedCode){
         this.code = savedCode;
     }
     SecretCode(){
         this.code = generateCode();
+    }
+
+    public char[] getCode() {
+        return code;
     }
 
     abstract char[] generateCode();
