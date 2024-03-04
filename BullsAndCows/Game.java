@@ -5,7 +5,7 @@ import java.util.*;
 public class Game {
 
     private Player currentPlayer;
-    private char[] Guess;
+    private char[] Guess, preChangeGuess;
     private SecretCode codeGame;
 
     public Game(Player p, String codeType){
@@ -39,6 +39,7 @@ public class Game {
      */
     void resetGuess() {
         Guess = new char[]{'\0', '\0', '\0', '\0'};
+        preChangeGuess = new char[]{'\0', '\0', '\0', '\0'};
     }
 
     /*
@@ -69,9 +70,11 @@ public class Game {
                                 "letter / number you wish to guess, followed by the position to put that guess (between 1 and 4), e.g. a4. To " +
                                 "change more than one position at a time, simply enter a comma followed by your next guess, e.g. a4,g1,h3. Note " +
                                 "there are no spaces\nOther commands are as follows:\n\n\t/hint -\tIf you are stuck, receive a hint for your " +
-                                "guess\n\t/giveup -\t If you are really stuck, you can give up and see the solution\n\t/guess -\tSubmit your " +
-                                "completed guess, all positions of your guess must be filled.\n\t/undo -\t If you want to remove a " +
-                                "change you've made to your guess.";
+                                "guess\n\t/giveup -\tIf you are really stuck, you can give up and see the solution\n\t/guess -\tSubmit your " +
+                                "completed guess, all positions of your guess must be filled.\n\t/undo -\t If you want to undo a " +
+                                "change you've made to your guess (only one undo can be made to any given position).\n\t/save -\tSave the secret " +
+                                "code you are currently guessing to try again later.\n\t/load -\tLoad a previous secret code to resume guessing.\n\t" +
+                                "/stats -\tView game play statistics, such as accuracy over all games.";
 
         // create an instance of chosen secret code
         if (isNumberGame) {codeGame = new NumbersCode();} else {codeGame = new LettersCode();}
@@ -119,6 +122,15 @@ public class Game {
                             } else {
                                 System.out.println("\nUNDO CANCELLED");
                             }
+
+                        case "/save":
+                            System.out.println("\nSAVE CURRENT CODE FOR LATER");
+
+                        case "/load":
+                            System.out.println("\nLOAD CODE FROM PREVIOUS");
+
+                        case "/stats":
+                            System.out.println("\nMY CURRENT STATS");
 
                         default:                                // case when input is not recognised
                             System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
@@ -198,7 +210,7 @@ public class Game {
     boolean undoConfirmation() {
         while (true) {
             Scanner undoScan = new Scanner(System.in);
-            System.out.println("\nWhat position of your guess do you wish to remove? >>>");
+            System.out.println("\nWhat position of your guess do you wish to undo? >>>");
 
             String undoPos = undoScan.nextLine();
             if (undoPos.compareTo("") == 0) {
@@ -238,12 +250,14 @@ public class Game {
         if (codeGame.getClass() == LettersCode.class) {
             val = Character.toLowerCase(val);
             if (val >= 'a' && val <= 'z') {
+                preChangeGuess[position] = Guess[position];
                 Guess[position] = val;
             } else {
                 throw new IllegalArgumentException("Value must be a letter");
             }
         } else if (codeGame.getClass() == NumbersCode.class) {
             if (val >= '0' && val <= '9') {
+                preChangeGuess[position] = Guess[position];
                 Guess[position] = val;
             } else {
                 throw new IllegalArgumentException("Value must be a Number");
@@ -278,7 +292,7 @@ public class Game {
     @param position number of place to null
     */
     private void undoGuess(int position){
-        Guess[position] = '\0';
+        Guess[position] = preChangeGuess[position];
     }
 
     void saveGuess(){
