@@ -1,7 +1,7 @@
 package BullsAndCows;
 
 public abstract class SecretCode {
-    char[] code;
+    private char[] code;
 
     SecretCode(char[] savedCode){
         this.code = savedCode;

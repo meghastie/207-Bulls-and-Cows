@@ -3,13 +3,13 @@ package BullsAndCows;
 import java.util.Random;
 
 public class NumbersCode extends SecretCode {
-    int numCode;
+    private int numCode;
     public NumbersCode() {
         generateCode();
     }
-    public NumbersCode(int code){
-        this.code = Integer.toString(code).toCharArray();
-        numCode = code;
+    public NumbersCode(char[] code){
+        super(code);
+        numCode = Integer.parseInt(String.valueOf(code));
     }
     public char[] generateCode() {
         Random rand = new Random();
@@ -17,7 +17,7 @@ public class NumbersCode extends SecretCode {
         int max = 9999;
 
         numCode = rand.nextInt(max - min + 1) + min; //generates random 4 digit number
-        code = Integer.toString(numCode).toCharArray();
+        char[] code = Integer.toString(numCode).toCharArray();
         //String code = "NULL";
         while (hasDuplicateCharacter(Integer.toString(numCode).toCharArray())) {
             numCode = rand.nextInt(max - min + 1) + min;

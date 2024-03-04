@@ -76,7 +76,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game(new NumbersCode(9876));
+            game = new Game(new NumbersCode(new char[]{'9','8','7','6'}));
         }
         finally {
             System.setIn(old);

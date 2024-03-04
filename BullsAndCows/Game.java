@@ -8,7 +8,7 @@ public class Game {
     private char[] Guess, preChangeGuess;
     private SecretCode codeGame;
     public int status = 0;
-    Scanner inputScanner;
+    private Scanner inputScanner;
 
     public Game(Player p, String codeType){
         this.currentPlayer = p;
@@ -34,6 +34,8 @@ public class Game {
 
     /*
    Get a hint from the secret code and return
+
+   @return a hint to help the user guess the code
    */
     String getHint(){
         return "";
