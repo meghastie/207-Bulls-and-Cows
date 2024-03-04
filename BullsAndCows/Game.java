@@ -117,12 +117,15 @@ public class Game {
                         case "/help":
                             System.out.println(instructions);
                             break;
+
                         case "/guess":
                             finishInputGuess = true;
                             break;
+
                         case "/hint":
                             System.out.println(getHint());
                             break;
+
                         case "/giveup":
                             if (giveUpConfirmation()) {
                                 System.out.println("\nSolution: " + showSolution(codeGame));
@@ -130,21 +133,26 @@ public class Game {
                                 finishInputGuess = true;
                             }
                             break;
+
                         case "/undo":
                             if (undoConfirmation()) {
                                 System.out.println("\nUNDO CONFIRMED");
                             } else {
                                 System.out.println("\nUNDO CANCELLED");
                             }
+                            break;
 
                         case "/save":
                             System.out.println("\nSAVE CURRENT CODE FOR LATER");
+                            break;
 
                         case "/load":
                             System.out.println("\nLOAD CODE FROM PREVIOUS");
+                            break;
 
                         case "/stats":
                             System.out.println("\nMY CURRENT STATS");
+                            break;
 
                         default:                                // case when input is not recognised
                             System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
