@@ -7,11 +7,19 @@ public class Game {
     private Player currentPlayer;
     private char[] Guess;
     private SecretCode codeGame;
+    public int status = 0;
     Scanner inputScanner;
 
     public Game(Player p, String codeType){
         this.currentPlayer = p;
         resetGuess();
+    }
+
+    public Game(SecretCode setCode){
+        codeGame = setCode;
+        resetGuess();
+        inputScanner = new Scanner(System.in);
+        playGame();
     }
 
     public Game(Player p){
@@ -29,6 +37,10 @@ public class Game {
    */
     String getHint(){
         return "";
+    }
+
+    public SecretCode getCodeGame() {
+        return codeGame;
     }
 
     void loadPlayer(){
@@ -75,7 +87,9 @@ public class Game {
 
         // create an instance of chosen secret code
         //if (isNumberGame) {codeGame = new NumbersCode();} else {codeGame = new LettersCode();}
-        gameSelection();
+        if(codeGame == null) {
+            gameSelection();
+        }
 
         gameOver = false;
         while (!gameOver) {                                     // begin game loop
@@ -194,6 +208,9 @@ public class Game {
                     codeGame = new LettersCode();
                     check = false;
                     break;
+                //Case purely for testing
+                case "letterinvalidfile":
+                    codeGame = new LettersCode();
                 default:
                     System.out.println("Enter a valid command");
                     break;
@@ -225,7 +242,7 @@ public class Game {
      */
     private boolean undoConfirmation() {
         while (true) {
-            Scanner undoScan = new Scanner(System.in);
+            Scanner undoScan = inputScanner;
             System.out.println("\nWhat position of your guess do you wish to remove? >>>");
 
             String undoPos = undoScan.nextLine();
@@ -306,6 +323,9 @@ public class Game {
     @param position number of place to null
     */
     private void undoGuess(int position){
+        if(Guess[position] == '\0'){
+            System.out.println("A complete guess has not been made yet");
+        }
         Guess[position] = '\0';
     }
 

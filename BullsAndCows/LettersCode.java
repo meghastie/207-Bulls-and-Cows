@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class LettersCode extends SecretCode{
-
     final String filePath = "./BullsAndCows/words.txt";
     private List<String> word; //holds the 15 options of words from file
     //String gameWord the random word chosen for the game
@@ -54,7 +53,22 @@ public class LettersCode extends SecretCode{
             scanner.close();
         }
         catch (FileNotFoundException e) {
-            System.err.println("File not found");
+            System.err.println("File not found, exiting program");
+            System.exit(0);
+        }
+    }
+
+    public static void populateWordList(String path) throws FileNotFoundException {
+        try {
+            Scanner scanner = new Scanner(new File(path));
+            while (scanner.hasNext()) {
+                String line = scanner.next();
+            }
+            scanner.close();
+        }
+        catch (FileNotFoundException e) {
+            System.err.println("File not found, exiting program");
+            throw new FileNotFoundException();
         }
     }
 }

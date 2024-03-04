@@ -10,6 +10,10 @@ public abstract class SecretCode {
         this.code = generateCode();
     }
 
+    public char[] getCode() {
+        return code;
+    }
+
     abstract char[] generateCode();
 
     /*
