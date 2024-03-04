@@ -19,8 +19,7 @@ public class Game {
 
     public Game(){
         resetGuess();
-        //default to number game
-        //playGame(true);
+        playGame();
     }
 
     /*
@@ -53,7 +52,7 @@ public class Game {
     Main game loop for one "round" each time function is called
     @param is the game type a number game? (True -> number game, False -> letter game)
     */
-    void playGame(boolean isNumberGame) {                       // Main game loop (Noa)
+    void playGame() {                       // Main game loop (Noa)
         // introduce game
         System.out.println("\n\nWelcome to Bulls and Cows. Please alter and submit your guess, or type /help for instructions of how to play.");
 
@@ -74,7 +73,8 @@ public class Game {
                                 "change you've made to your guess.";
 
         // create an instance of chosen secret code
-        if (isNumberGame) {codeGame = new NumbersCode();} else {codeGame = new LettersCode();}
+        //if (isNumberGame) {codeGame = new NumbersCode();} else {codeGame = new LettersCode();}
+        gameSelection();
 
         gameOver = false;
         while (!gameOver) {                                     // begin game loop
@@ -99,29 +99,30 @@ public class Game {
                     switch (userInput.toLowerCase()) {          // cases for all user commands
                         case "/help":
                             System.out.println(instructions);
-
+                            break;
                         case "/guess":
                             finishInputGuess = true;
-
+                            break;
                         case "/hint":
                             System.out.println(getHint());
-
+                            break;
                         case "/giveup":
                             if (giveUpConfirmation()) {
                                 System.out.println("\nSolution: " + showSolution(codeGame));
                                 givenUp = true;
                                 finishInputGuess = true;
                             }
-
+                            break;
                         case "/undo":
                             if (undoConfirmation()) {
                                 System.out.println("\nUNDO CONFIRMED");
                             } else {
                                 System.out.println("\nUNDO CANCELLED");
                             }
-
+                            break;
                         default:                                // case when input is not recognised
                             System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
+                            break;
                     }
                 }
             }
@@ -146,8 +147,8 @@ public class Game {
     Check if the user input is valid for changing the guess, any invalid inputs are skipped
     @return array list of completed changes
      */
-    ArrayList<String> inputGuessChange(String userInput) {
-        if (userInput.contains(" ") || userInput.contains("-") || userInput.length() < 2 || (userInput.length() > 2 && userInput.length() % 3 != 0)) {
+    private ArrayList<String> inputGuessChange(String userInput) {
+        if (userInput.contains(" ") || userInput.contains("-") || userInput.length() < 2 || (userInput.length() > 2 && (userInput.length()+1) % 3 != 0)) {
             return new ArrayList<>();
         }
 
@@ -155,7 +156,7 @@ public class Game {
 
         for (int i = 0; i < userInput.length(); i += 3) {       // MIGHT NEED SOME CHANGES WITH TESTING TO MAKE SURE INCLUDE length() = 2
             char inputChangeChar = userInput.charAt(i);
-            int inputChangePos = (int) userInput.charAt(i + 1) - 1;
+            int inputChangePos = Integer.parseInt(String.valueOf(userInput.charAt(i + 1))) -1;
 
             try {
                 enterGuess(inputChangePos, inputChangeChar);
@@ -172,10 +173,39 @@ public class Game {
         return completed;
     }
 
+    private void gameSelection(){
+        boolean check = true;
+        Scanner scanner;
+        while(check){
+            scanner = new Scanner(System.in);
+            System.out.println("What type of game do you want ot play? number or letter?");
+            String input = scanner.nextLine().toLowerCase();
+            switch(input){
+                case "help":
+                    System.out.println("Possible commands\n" +
+                            "/number select number game\n" +
+                            "/letter select letter game\n" +
+                            "/help shows list of commands");
+                    break;
+                case "number":
+                    codeGame = new NumbersCode();
+                    check = false;
+                    break;
+                case "letter":
+                    codeGame = new LettersCode();
+                    check = false;
+                    break;
+                default:
+                    System.out.println("Enter a valid command");
+                    break;
+            }
+        }
+    }
+
     /*
     Helper function for confirming the user wishes to give up
      */
-    boolean giveUpConfirmation() {
+    private boolean giveUpConfirmation() {
         while (true) {
             Scanner giveUpScan = new Scanner(System.in);
             System.out.println("\nAre you sure you want to give up? (y / n) >>>");
@@ -195,7 +225,7 @@ public class Game {
     /*
     Helper function for confirming the user wishes to give up
      */
-    boolean undoConfirmation() {
+    private boolean undoConfirmation() {
         while (true) {
             Scanner undoScan = new Scanner(System.in);
             System.out.println("\nWhat position of your guess do you wish to remove? >>>");
@@ -228,7 +258,7 @@ public class Game {
     @throws IllegalArgumentException       If the given value is not acceptable for the given code type
     @throws RuntimeException               If codeGame exists as neither types of subclass
     */
-    void enterGuess(int position, char val) {
+    private void enterGuess(int position, char val) {
         // Checks if given position is out of range
         if (position < 0 || position > 4) {
             throw new ArrayIndexOutOfBoundsException();
@@ -263,8 +293,8 @@ public class Game {
             System.out.println("Bulls: " + bullsCows[0]);
             System.out.println("Cows: " + bullsCows[1]);
 
-            currentPlayer.updateBulls(bullsCows[0]);
-            currentPlayer.updateCows(bullsCows[1]);
+            //currentPlayer.updateBulls(bullsCows[0]);
+            //currentPlayer.updateCows(bullsCows[1]);
 
             if (bullsCows[0]==4) {
                 return true;
@@ -295,7 +325,7 @@ public class Game {
     @param secretCode instance
     @return solution as String
     */
-    String showSolution(SecretCode secretCode){
+    private String showSolution(SecretCode secretCode){
         return "";
     }
 
