@@ -1,8 +1,10 @@
 package BullsAndCows;
 
+import java.util.ArrayList;
+
 public class Players {
 
-    private Player[] allPlayers;
+    private ArrayList<Player> allPlayers;
 
 
     public Players(){
@@ -17,8 +19,19 @@ public class Players {
 
     }
 
-    void findPlayer(Player p){
+    /*
+    Searches the list of all users for the player with the given username
 
+    @param targetUser   The username of the desired player
+    @return             The player with the given username. Null if none found.
+     */
+    Player findPlayer(String targetUser){
+        for(Player p : allPlayers){
+            if(p.getUsername() == targetUser){
+                return p;
+            }
+        }
+        return null;
     }
 
     /*

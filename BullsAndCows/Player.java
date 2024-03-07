@@ -61,4 +61,8 @@ public class Player {
     void getCodesDeciphered(){
 
     }
+
+    void getUsername(){
+
+    }
 }
