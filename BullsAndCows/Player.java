@@ -13,6 +13,14 @@ public class Player {
 
     }
 
+    public Player(String name){
+
+    }
+
+    public Player(String name, int bulls, int cows, int guesses, int attempted, int deciphered){
+
+    }
+
     /*
     Increases the number of Bulls by the given amount
 
@@ -60,5 +68,9 @@ public class Player {
 
     int getCodesDeciphered(){
         return codesDeciphered;
+    }
+
+    void getUsername(){
+
     }
 }
