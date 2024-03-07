@@ -350,6 +350,7 @@ public class Game {
 
             currentPlayer.updateBulls(bullsCows[0]);
             currentPlayer.updateCows(bullsCows[1]);
+            currentPlayer.incrementGuesses();
 
             if (bullsCows[0]==4) {
                 return true;

@@ -5,6 +5,7 @@ public class Player {
     private String username;
     private int numberOfBulls;
     private int numberOfCows;
+    private int numberOfGuesses;
     private int codesAttempted;
     private int codesDeciphered;
 
@@ -28,6 +29,13 @@ public class Player {
      */
     void updateCows(int Cows){
         numberOfCows = numberOfCows + Cows;
+    }
+
+    /*
+    Increases the number of total guesses made by 1.
+     */
+    void incrementGuesses(){
+        this.numberOfGuesses++;
     }
 
     void incrementCodesAttempted(){
