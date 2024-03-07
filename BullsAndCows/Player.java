@@ -39,26 +39,26 @@ public class Player {
     }
 
     void incrementCodesAttempted(){
-
+        this.codesAttempted++;
     }
 
     void incrementCodesDeciphered(){
-
+        this.codesDeciphered++;
     }
 
-    void getBulls(){
-
+    int getBulls(){
+        return numberOfCows;
     }
 
-    void getCows(){
-
+    int getCows(){
+        return numberOfCows;
     }
 
-    void getCodesAttempted(){
-
+    int getCodesAttempted(){
+        return codesAttempted;
     }
 
-    void getCodesDeciphered(){
-
+    int getCodesDeciphered(){
+        return codesDeciphered;
     }
 }

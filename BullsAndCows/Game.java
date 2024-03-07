@@ -155,15 +155,16 @@ public class Game {
             gameOver = givenUp;
 
             if (!givenUp) {
-                if(submitGuess()) {
+                if (submitGuess()) {
                     System.out.println("\nYOUR GUESS WAS CORRECT!!!");
+                    currentPlayer.incrementCodesDeciphered();
                     gameOver = true;
                 } else {
                     System.out.println("\nYOUR GUESS WAS INCORRECT, TRY AGAIN");
                 }
             }
         }
-
+        currentPlayer.incrementCodesAttempted();
         System.out.println("GAME FINISHED");
     }
 
