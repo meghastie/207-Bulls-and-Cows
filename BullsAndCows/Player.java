@@ -70,6 +70,10 @@ public class Player {
         return codesDeciphered;
     }
 
+    int getNumberOfGuesses(){
+        return numberOfGuesses;
+    }
+
     void getUsername(){
 
     }
