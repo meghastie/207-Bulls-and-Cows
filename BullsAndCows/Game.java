@@ -60,7 +60,7 @@ public class Game {
         if (this.currentPlayer != null) {                                       // if logged in already
             System.out.println("\nAlready logged in as user: " + this.currentPlayer.getUsername() + ". Try exiting current game?");
         } else {
-            this.currentPlayer = this.allPlayers.getPlayer(loginUser);          // players class yet to be instantiated / loaded from file
+            this.currentPlayer = this.allPlayers.findPlayer(loginUser);         // null if user doesnt exist
 
             if (this.currentPlayer == null) {                                   // if player does not exist
                 this.currentPlayer = new Player(loginUser);
