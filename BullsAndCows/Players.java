@@ -18,33 +18,70 @@ public class Players {
 
     }
 
-    void findPlayer(Player p) {      // IS THIS NEEDED? IF SO WHAT FOR, I CREATED A getPlayer() METHOD TO GET A PLAYER BASED ON USERNAME, DO WE NEED BOTH
+    /*
+    Searches the list of all users for the player with the given username
 
-    }
-
-    Player getPlayer(String userName){
-        for (Player p : this.allPlayers) {
-            if (p.getUsername().equals(userName)) {
+    @param targetUser   The username of the desired player
+    @return             The player with the given username. Null if none found.
+     */
+    Player findPlayer(String targetUser){
+        for(Player p : allPlayers){
+            if(p.getUsername().equals(targetUser)){
                 return p;
             }
         }
-
         return null;
     }
 
-    void getAllPlayerBulls(){
+    /*
+    Sums the total number of Bulls achieved by all stored players
 
+    @returns The total number of Bulls
+     */
+    int getAllPlayerBulls(){
+        int totalBulls = 0;
+        for(Player p : allPlayers){
+            totalBulls = totalBulls + p.getBulls();
+        }
+        return totalBulls;
     }
 
-    void getAllPlayerCows(){
+    /*
+    Sums the total number of Cows achieved by all stored players
 
+    @returns The total number of Cows
+     */
+    int getAllPlayerCows(){
+        int totalCows = 0;
+        for(Player p : allPlayers){
+            totalCows = totalCows + p.getCows();
+        }
+        return totalCows;
     }
 
-    void getAllPlayersSecretCodesAttempted(){
+    /*
+    Sums the total number of Secret Codes attempted by all stored players
 
+    @returns The total number of Secret Codes attempted
+     */
+    int getAllPlayersSecretCodesAttempted(){
+        int totalCodes = 0;
+        for(Player p : allPlayers){
+            totalCodes = totalCodes + p.getCodesAttempted();
+        }
+        return totalCodes;
     }
 
-    void getAllPlayersSecretCodesDeciphered(){
+    /*
+    Sums the total number of Secret Codes deciphered by all stored players
 
+    @returns The total number of Secret Codes deciphered
+     */
+    int getAllPlayersSecretCodesDeciphered(){
+        int totalCodes = 0;
+        for(Player p : allPlayers){
+            totalCodes = totalCodes + p.getCodesDeciphered();
+        }
+        return totalCodes;
     }
 }

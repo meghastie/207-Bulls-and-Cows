@@ -31,7 +31,7 @@ class LettersCodeTest {
     @Test
     void compareCode(){
         //valid guess
-        char[] word = code.generateCode();
+        char[] word = code.getCode();
         assertArrayEquals(code.compareCode(word), new int[]{4, 0});
         //invalid guess right format
         assertArrayEquals(setCode.compareCode("blmi".toCharArray()), new int[]{2, 2});

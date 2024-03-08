@@ -16,7 +16,7 @@ class NumbersCodeTest {
     @BeforeEach
     void getCodes(){
         code = new NumbersCode();
-        setCode = new NumbersCode(4567);
+        setCode = new NumbersCode(new char[]{'4','5','6','7'});
     }
 
     @Test
@@ -44,7 +44,7 @@ class NumbersCodeTest {
     @Test
     void compareCode(){
         //valid guess
-        char[] word = code.generateCode();
+        char[] word = code.getCode();
         assertArrayEquals(new int[] {4,0}, code.compareCode(word));
         //invalid guess right format
         assertArrayEquals(new int[] {2,2}, setCode.compareCode(new char[] {'4','5','7','6'}));

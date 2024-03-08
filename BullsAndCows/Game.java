@@ -9,7 +9,7 @@ public class Game {
     private char[] Guess, preChangeGuess;
     private SecretCode codeGame;
     public int status = 0;
-    Scanner inputScanner;
+    private Scanner inputScanner;
 
     public Game(Player p, String codeType){
         this.currentPlayer = p;
@@ -34,8 +34,9 @@ public class Game {
     }
 
     /*
-   Get a hint from the secret code
-   @returns hint for code as string
+   Get a hint from the secret code and return
+
+   @return a hint to help the user guess the code
    */
     String getHint(){
         return "";
@@ -146,7 +147,7 @@ public class Game {
                             break;
 
                         case "/help":
-                            System.out.println(instructions);
+                            printInstructions();
                             break;
 
                         case "/guess":
@@ -204,16 +205,38 @@ public class Game {
             gameOver = givenUp;
 
             if (!givenUp) {
-                if(submitGuess()) {
+                if (submitGuess()) {
                     System.out.println("\nYOUR GUESS WAS CORRECT!!!");
+                    currentPlayer.incrementCodesDeciphered();
                     gameOver = true;
                 } else {
                     System.out.println("\nYOUR GUESS WAS INCORRECT, TRY AGAIN");
                 }
             }
         }
-
+        currentPlayer.incrementCodesAttempted();
         System.out.println("GAME FINISHED");
+    }
+
+
+    /*
+    Prints the instructions
+     */
+    private void printInstructions(){
+        final String instructions =   "\nHOW TO PLAY\n\nYou are tasked with deciphering a secret code, consisting of either 4 different numbers or " +
+                "letters.\nEach guess you make, you will be shown how many 'Bulls' and 'Cows' you managed to get, meaning how " +
+                "many numbers / letters you got correct & in the right position, and how many you just got correct, " +
+                "respectively.\nCOMMANDS\n\nYou begin with an empty guess. To set one of the characters in your guess, type the " +
+                "letter / number you wish to guess, followed by the position to put that guess (between 1 and 4), e.g. a4. To " +
+                "change more than one position at a time, simply enter a comma followed by your next guess, e.g. a4,g1,h3. Note " +
+                "there are no spaces\nOther commands are as follows:\n\n\t/hint -\tIf you are stuck, receive a hint for your " +
+                "guess\n\t/giveup -\tIf you are really stuck, you can give up and see the solution\n\t/guess -\tSubmit your " +
+                "completed guess, all positions of your guess must be filled.\n\t/undo -\t If you want to undo a " +
+                "change you've made to your guess (only one undo can be made to any given position).\n\t/save -\tSave the secret " +
+                "code you are currently guessing to try again later.\n\t/load -\tLoad a previous secret code to resume guessing.\n\t" +
+                "/stats -\tView game play statistics, such as accuracy over all games.";
+
+        System.out.println(instructions);
     }
 
     /*
@@ -254,10 +277,7 @@ public class Game {
             String input = inputScanner.nextLine().toLowerCase();
             switch(input){
                 case "help":
-                    System.out.println("Possible commands\n" +
-                            "/number select number game\n" +
-                            "/letter select letter game\n" +
-                            "/help shows list of commands");
+                    printHelp();
                     break;
                 case "number":
                     codeGame = new NumbersCode();
@@ -275,6 +295,16 @@ public class Game {
                     break;
             }
         }
+    }
+
+    /*
+    Prints how to choose a game type
+     */
+    private void printHelp(){
+        System.out.println("Possible commands\n" +
+                "/number select number game\n" +
+                "/letter select letter game\n" +
+                "/help shows list of commands");
     }
 
     /*
@@ -369,13 +399,13 @@ public class Game {
             System.out.println("Bulls: " + bullsCows[0]);
             System.out.println("Cows: " + bullsCows[1]);
 
-            //currentPlayer.updateBulls(bullsCows[0]);
-            //currentPlayer.updateCows(bullsCows[1]);
+            currentPlayer.updateBulls(bullsCows[0]);
+            currentPlayer.updateCows(bullsCows[1]);
+            currentPlayer.incrementGuesses();
 
-            if (bullsCows[0]==4) {
-                return true;
-            }
+            return bullsCows[0] == 4;
         }
+
         return false;
     }
 

@@ -35,7 +35,7 @@ public class LettersCode extends SecretCode{
         Random rand = new Random();
         int randIndex = rand.nextInt(word.size());
 
-        code = word.get(randIndex).toCharArray();
+        char[] code = word.get(randIndex).toCharArray();
         return code;
     }
 

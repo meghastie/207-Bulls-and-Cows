@@ -5,16 +5,20 @@ public class Player {
     private String username;
     private int numberOfBulls;
     private int numberOfCows;
+    private int numberOfGuesses;
     private int codesAttempted;
     private int codesDeciphered;
 
-    public Player(String uName){
-        this.username = uName;
+    public Player(){
 
-        this.numberOfBulls = 0;
-        this.numberOfCows = 0;
-        this.codesAttempted = 0;
-        this.codesDeciphered = 0;
+    }
+
+    public Player(String name){
+        this.username = name;
+    }
+
+    public Player(String name, int bulls, int cows, int guesses, int attempted, int deciphered){
+
     }
 
     /*
@@ -35,12 +39,19 @@ public class Player {
         numberOfCows = numberOfCows + Cows;
     }
 
-    void incrementCodesAttempted(){
+    /*
+    Increases the number of total guesses made by 1.
+     */
+    void incrementGuesses(){
+        this.numberOfGuesses++;
+    }
 
+    void incrementCodesAttempted(){
+        this.codesAttempted++;
     }
 
     void incrementCodesDeciphered(){
-
+        this.codesDeciphered++;
     }
 
     String getUsername() {
