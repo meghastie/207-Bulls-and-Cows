@@ -8,8 +8,13 @@ public class Player {
     private int codesAttempted;
     private int codesDeciphered;
 
-    public Player(){
+    public Player(String uName){
+        this.username = uName;
 
+        this.numberOfBulls = 0;
+        this.numberOfCows = 0;
+        this.codesAttempted = 0;
+        this.codesDeciphered = 0;
     }
 
     /*
@@ -38,19 +43,23 @@ public class Player {
 
     }
 
-    void getBulls(){
-
+    String getUsername() {
+        return this.username;
     }
 
-    void getCows(){
-
+    int getBulls(){
+        return this.numberOfBulls;
     }
 
-    void getCodesAttempted(){
-
+    int getCows(){
+        return this.numberOfCows;
     }
 
-    void getCodesDeciphered(){
+    int getCodesAttempted(){
+        return this.codesAttempted;
+    }
 
+    int getCodesDeciphered(){
+        return this.codesDeciphered;
     }
 }

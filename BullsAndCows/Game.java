@@ -5,6 +5,7 @@ import java.util.*;
 public class Game {
 
     private Player currentPlayer;
+    private Players allPlayers;
     private char[] Guess, preChangeGuess;
     private SecretCode codeGame;
     public int status = 0;
@@ -33,7 +34,8 @@ public class Game {
     }
 
     /*
-   Get a hint from the secret code and return
+   Get a hint from the secret code
+   @returns hint for code as string
    */
     String getHint(){
         return "";
@@ -43,16 +45,37 @@ public class Game {
         return codeGame;
     }
 
-    void loadPlayer(){
+    /*
+    Load all players from a file, and store in instance of players class
+     */
+    void loadPlayers() {
+    }
 
+    /*
+    Create account for / log in the user (load player), if not already logged in
+    @param the username the user wants to log in as
+     */
+    void loadPlayer(String loginUser) {
+        if (this.currentPlayer != null) {                                       // if logged in already
+            System.out.println("\nAlready logged in as user: " + this.currentPlayer.getUsername() + ". Try exiting current game?");
+        } else {
+            this.currentPlayer = this.allPlayers.getPlayer(loginUser);          // players class yet to be instantiated / loaded from file
+
+            if (this.currentPlayer == null) {                                   // if player does not exist
+                this.currentPlayer = new Player(loginUser);
+                System.out.println("\nCreating account with username: " + loginUser);
+            } else {                                                            // player exists
+                System.out.println("\nLogging in as user: " + loginUser);
+            }
+        }
     }
 
     /*
     Resets the current guess for making a new guess
      */
     void resetGuess() {
-        Guess = new char[]{'\0', '\0', '\0', '\0'};
-        preChangeGuess = new char[]{'\0', '\0', '\0', '\0'};
+        this.Guess = new char[]{'\0', '\0', '\0', '\0'};
+        this.preChangeGuess = new char[]{'\0', '\0', '\0', '\0'};
     }
 
     /*
@@ -60,7 +83,7 @@ public class Game {
     @return formatted string of Guess array
      */
     String showGuess() {
-        return "[ " + Guess[0] + " ] [ " + Guess[1] + " ] [ " + Guess[2] + " ] [ " + Guess[3] + " ]";
+        return "[ " + this.Guess[0] + " ] [ " + this.Guess[1] + " ] [ " + this.Guess[2] + " ] [ " + this.Guess[3] + " ]";
     }
 
     /*
@@ -81,12 +104,14 @@ public class Game {
                                 "respectively.\nCOMMANDS\n\nYou begin with an empty guess. To set one of the characters in your guess, type the " +
                                 "letter / number you wish to guess, followed by the position to put that guess (between 1 and 4), e.g. a4. To " +
                                 "change more than one position at a time, simply enter a comma followed by your next guess, e.g. a4,g1,h3. Note " +
-                                "there are no spaces\nOther commands are as follows:\n\n\t/hint -\tIf you are stuck, receive a hint for your " +
+                                "there are no spaces\nOther commands are as follows:\n\t/login -\tLogin or create an account to save your " +
+                                "score and statistics, and maybe you can top the leaderboard!\n\t/hint -\tIf you are stuck, receive a hint for your " +
                                 "guess\n\t/giveup -\tIf you are really stuck, you can give up and see the solution\n\t/guess -\tSubmit your " +
                                 "completed guess, all positions of your guess must be filled.\n\t/undo -\t If you want to undo a " +
                                 "change you've made to your guess (only one undo can be made to any given position).\n\t/save -\tSave the secret " +
                                 "code you are currently guessing to try again later.\n\t/load -\tLoad a previous secret code to resume guessing.\n\t" +
-                                "/stats -\tView game play statistics, such as accuracy over all games.";
+                                "/stats -\tView game play statistics, such as accuracy over all games.\n\t/quit -\tQuit current game without saving " +
+                                "or completing guess.";
 
         // create an instance of chosen secret code
         //if (isNumberGame) {codeGame = new NumbersCode();} else {codeGame = new LettersCode();}
@@ -111,9 +136,15 @@ public class Game {
                     } else {
                         System.out.println("\nChanges completed: " + completedChanges);
                     }
+
                 } else {                                        // input is a user command, or invalid
 
                     switch (userInput.toLowerCase()) {          // cases for all user commands
+
+                        case "/login":
+                            System.out.println("\nLOGIN USER");
+                            break;
+
                         case "/help":
                             System.out.println(instructions);
                             break;
@@ -144,14 +175,22 @@ public class Game {
 
                         case "/save":
                             System.out.println("\nSAVE CURRENT CODE FOR LATER");
+                            saveGuess();
                             break;
 
                         case "/load":
                             System.out.println("\nLOAD CODE FROM PREVIOUS");
+                            loadGame();
                             break;
 
                         case "/stats":
                             System.out.println("\nMY CURRENT STATS");
+                            break;
+
+                        case "/quit":
+                            System.out.println("\nQUITING GAME");
+                            givenUp = true;
+                            finishInputGuess = true;
                             break;
 
                         default:                                // case when input is not recognised
@@ -188,7 +227,7 @@ public class Game {
 
         ArrayList<String> completed = new ArrayList<>();
 
-        for (int i = 0; i < userInput.length(); i += 3) {       // MIGHT NEED SOME CHANGES WITH TESTING TO MAKE SURE INCLUDE length() = 2
+        for (int i = 0; i < userInput.length(); i += 3) {
             char inputChangeChar = userInput.charAt(i);
             int inputChangePos = Integer.parseInt(String.valueOf(userInput.charAt(i + 1))) -1;
 
