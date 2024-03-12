@@ -1,5 +1,9 @@
 package BullsAndCows;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 public class Game {
@@ -10,6 +14,7 @@ public class Game {
     private SecretCode codeGame;
     public int status = 0;
     private Scanner inputScanner;
+    private int addPlayersFrom;
 
     public Game(Player p, String codeType){
         this.currentPlayer = p;
@@ -48,8 +53,72 @@ public class Game {
 
     /*
     Load all players from a file, and store in instance of players class
+    players.txt should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
      */
-    void loadPlayers() {
+    void loadAllPlayers() {
+        final String playersFilePath = "./BullsAndCows/players.txt";
+        String line;
+        String[] parsedLine;
+        Player newPlayer;
+
+        // Create new instance of players
+        this.allPlayers = new Players();
+
+        try {                                                           // Try opening the file and reading data
+            Scanner scanner = new Scanner(new File(playersFilePath));
+            while (scanner.hasNext()) {
+                this.addPlayersFrom++;                                  // Keep track of what players are already in file, for updating at end
+
+                line = scanner.next();
+                parsedLine = line.split(",");                    // Split by commas to get individual data
+
+                newPlayer = new Player(
+                        parsedLine[0],
+                        Integer.parseInt(parsedLine[1]),
+                        Integer.parseInt(parsedLine[2]),
+                        Integer.parseInt(parsedLine[3]),
+                        Integer.parseInt(parsedLine[4]),
+                        Integer.parseInt(parsedLine[5])
+                );
+
+                allPlayers.addPlayer(newPlayer);
+            }
+            scanner.close();
+        }
+        catch (FileNotFoundException e) {
+            System.err.println("\nFile not found, exiting program");
+            System.exit(0);
+        }
+    }
+
+    /*
+    Adds all new players created to file, should run when game is quit
+    each line should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
+     */
+    void updatePlayers() {
+        final String playerFilePath = "./BullsAndCows/players.txt";
+
+        try {
+            FileOutputStream fileOut = new FileOutputStream(playerFilePath, true);
+
+            for (int i = this.addPlayersFrom; i < allPlayers.getPlayerCount(); i++) {       // Append all players to file, apart from ones already in
+                fileOut.write(formatPlayer(this.allPlayers.findPlayer(i)).getBytes());
+            }
+
+            fileOut.close();
+        }
+        catch (IOException e) {
+            System.err.println("\nFatal IO error; this shouldn't happen");
+            System.exit(0);
+        }                                    // file will already have been found by loadPlayers at beginning, so no need to catch again
+    }
+
+    /*
+    Formats a players data to be written to file
+    should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
+     */
+    private String formatPlayer(Player p) {
+        return p.getUsername() + "," + p.getBulls() + "," + p.getCows() + "," + p.getGuesses() + "," + p.getCodesAttempted() + "," + p.getCodesDeciphered() + "\n";
     }
 
     /*
@@ -199,7 +268,8 @@ public class Game {
                 }
             }
         }
-        currentPlayer.incrementCodesAttempted();
+        this.currentPlayer.incrementCodesAttempted();
+        updatePlayers();
         System.out.println("GAME FINISHED");
     }
 

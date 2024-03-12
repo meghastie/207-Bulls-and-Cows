@@ -14,7 +14,7 @@ public class Players {
         this.allPlayers.add(p);
     }
 
-    void savePlayers(){
+    void savePlayers(){                 // loadPlayers does what I assume this is meant to, but in game class, could be moved?
 
     }
 
@@ -25,13 +25,27 @@ public class Players {
     @return             The player with the given username. Null if none found.
      */
     Player findPlayer(String targetUser){
-        for(Player p : allPlayers){
+        for(Player p : this.allPlayers){
             if(p.getUsername().equals(targetUser)){
                 return p;
             }
         }
         return null;
     }
+
+    /*
+    Searches the list of all users for the player with the given username
+
+    @param targetIndex  The index of the desired player in allPlayers list
+    @return             The player with the given index, or null if index out of bounds
+     */
+        Player findPlayer(int targetIndex){
+            if (targetIndex >= this.allPlayers.size() || targetIndex < 0) {
+                return null;
+            }
+
+            return this.allPlayers.get(targetIndex);
+        }
 
     /*
     Sums the total number of Bulls achieved by all stored players
@@ -83,5 +97,9 @@ public class Players {
             totalCodes = totalCodes + p.getCodesDeciphered();
         }
         return totalCodes;
+    }
+
+    int getPlayerCount() {
+        return this.allPlayers.size();
     }
 }

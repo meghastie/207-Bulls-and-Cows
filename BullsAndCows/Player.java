@@ -66,6 +66,10 @@ public class Player {
         return this.numberOfCows;
     }
 
+    int getGuesses() {
+        return this.numberOfGuesses;
+    }
+
     int getCodesAttempted(){
         return this.codesAttempted;
     }
