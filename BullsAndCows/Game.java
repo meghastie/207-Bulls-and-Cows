@@ -558,4 +558,48 @@ public class Game {
 
         System.out.println();
     }
+
+    /*
+    Prints the total number of cows achieved by all players
+    */
+    void print_total_cows(){
+        System.out.println("TOTAL COWS ACHIEVED: " + allPlayers.getAllPlayerCows());
+    }
+
+    /*
+    Prints the total number of bulls achieved by all players
+    */
+    void print_total_bulls(){
+        System.out.println("TOTAL COWS ACHIEVED: " + allPlayers.getAllPlayerBulls());
+    }
+
+    /*
+    Prints the total number of codes attempted by all players
+    */
+    void print_total_attempts(){
+        System.out.println("TOTAL COWS ACHIEVED: " + allPlayers.getAllPlayersSecretCodesAttempted());
+    }
+
+    /*
+    Prints the total number of codes deciphered by all players
+    */
+    void print_total_deciphered(){
+        System.out.println("TOTAL COWS ACHIEVED: " + allPlayers.getAllPlayersSecretCodesDeciphered());
+    }
+
+    /*
+    Prints the username and number of codes deciphered of the top ten players
+    */
+    void print_top_ten(){
+
+        Player[] topTen = allPlayers.getTopTen();
+        System.out.println("THE TOP 10 PLAYERS BASED ON CODES COMPLETED:");
+        System.out.println();
+
+        int i = 0;
+        while(topTen[i] != null && i<10) {
+            System.out.println("USER: " + topTen[i].getUsername() + "\tSCORED: " + topTen[i].getCodesDeciphered());
+            i++;
+        }
+    }
 }
