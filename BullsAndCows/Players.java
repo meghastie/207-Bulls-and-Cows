@@ -39,13 +39,13 @@ public class Players {
     @param targetIndex  The index of the desired player in allPlayers list
     @return             The player with the given index, or null if index out of bounds
      */
-        Player findPlayer(int targetIndex){
-            if (targetIndex >= this.allPlayers.size() || targetIndex < 0) {
-                return null;
-            }
-
-            return this.allPlayers.get(targetIndex);
+    Player findPlayer(int targetIndex){
+        if (targetIndex >= this.allPlayers.size() || targetIndex < 0) {
+            return null;
         }
+
+        return this.allPlayers.get(targetIndex);
+    }
 
     /*
     Sums the total number of Bulls achieved by all stored players

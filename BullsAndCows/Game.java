@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
+
+import static java.lang.Float.isNaN;
 
 public class Game {
 
@@ -521,5 +524,37 @@ public class Game {
         }
 
         return true;
+    }
+
+    /*
+    Prints all of a user's details
+
+    @param p    The player to be printed
+     */
+    private void print_player_details(Player p){
+        System.out.println("USERNAME:        " + p.getUsername());
+        System.out.println("CODES ATTEMPTED: " + p.getCodesAttempted());
+        System.out.println("CODES COMPLETED: " + p.getCodesDeciphered());
+        System.out.println("BULLS:           " + p.getBulls());
+
+        System.out.println("ACCURACY:        ");
+        if(isNaN(p.bullsAccuracy())){
+            System.out.print("N/A");
+        }
+        else{
+            System.out.print(new DecimalFormat("#.##").format(p.bullsAccuracy()) + "%");
+        }
+
+        System.out.println("COWS:            " + p.getCows());
+
+        System.out.println("ACCURACY:        ");
+        if(isNaN(p.cowsAccuracy())){
+            System.out.print("N/A");
+        }
+        else{
+            System.out.print(new DecimalFormat("#.##").format(p.cowsAccuracy()) + "%");
+        }
+
+        System.out.println();
     }
 }

@@ -77,4 +77,22 @@ public class Player {
     int getCodesDeciphered(){
         return this.codesDeciphered;
     }
+
+    /*
+    Calculates the accuracy of bulls as a percentage of the total number of characters guessed
+
+    @return The accuracy
+     */
+    float bullsAccuracy(){
+        return ((float)(numberOfBulls * 100) / numberOfGuesses);
+    }
+
+    /*
+    Calculates the accuracy of cows as a percentage of the total number of characters guessed
+
+    @return The accuracy
+     */
+    float cowsAccuracy(){
+        return ((float)(numberOfCows * 100) / numberOfGuesses);
+    }
 }
