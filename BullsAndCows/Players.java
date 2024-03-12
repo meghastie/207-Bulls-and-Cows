@@ -1,5 +1,10 @@
 package BullsAndCows;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Players {
 
@@ -10,12 +15,23 @@ public class Players {
         allPlayers = new ArrayList<>();
     }
 
-    void addPlayer(Player p){
+    public void addPlayer(Player p){
         this.allPlayers.add(p);
     }
 
-    void savePlayers(){                 // loadPlayers does what I assume this is meant to, but in game class, could be moved?
-                                        // I believe this is meant to save the list of players to an external file - SB
+    public void savePlayers(){                 // loadPlayers does what I assume this is meant to, but in game class, could be moved?
+        try {
+            String filePath = "Players.txt";
+            FileWriter writer = new FileWriter(filePath);
+            for (Player p : this.allPlayers) {
+                writer.write(p.getUsername() + "," + p.getBulls() + "," + p.getCows() + "," + p.getGuesses() + "," + p.getCodesAttempted() + "," + p.getCodesDeciphered() + "\n");
+            }
+            writer.close();
+        }
+        catch (IOException e) {
+            System.err.println("File not found, exiting program");
+            System.exit(0);
+        }
     }
 
     /*
