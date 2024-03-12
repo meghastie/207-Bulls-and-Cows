@@ -15,7 +15,7 @@ public class Players {
     }
 
     void savePlayers(){                 // loadPlayers does what I assume this is meant to, but in game class, could be moved?
-
+                                        // I believe this is meant to save the list of players to an external file - SB
     }
 
     /*
