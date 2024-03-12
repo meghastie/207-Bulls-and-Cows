@@ -18,7 +18,12 @@ public class Player {
     }
 
     public Player(String name, int bulls, int cows, int guesses, int attempted, int deciphered){
-
+        username = name;
+        numberOfBulls = bulls;
+        numberOfCows = cows;
+        numberOfGuesses = guesses;
+        codesAttempted = attempted;
+        codesDeciphered = deciphered;
     }
 
     /*
