@@ -243,6 +243,7 @@ public class Game {
 
                         case "/stats":
                             System.out.println("\nMY CURRENT STATS");
+                            print_player_details(this.currentPlayer);
                             break;
 
                         case "/quit":
