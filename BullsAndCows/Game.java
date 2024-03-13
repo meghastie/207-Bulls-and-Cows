@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.lang.Float.isNaN;
@@ -17,7 +19,6 @@ public class Game {
     private SecretCode codeGame;
     public int status = 0;
     private Scanner inputScanner;
-    private int addPlayersFrom;
 
     public Game(Player p, String codeType){
         this.currentPlayer = p;
@@ -52,76 +53,6 @@ public class Game {
 
     public SecretCode getCodeGame() {
         return codeGame;
-    }
-
-    /*
-    Load all players from a file, and store in instance of players class
-    players.txt should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
-     */
-    void loadAllPlayers() {
-        final String playersFilePath = "./BullsAndCows/players.txt";
-        String line;
-        String[] parsedLine;
-        Player newPlayer;
-
-        // Create new instance of players
-        this.allPlayers = new Players();
-
-        try {                                                           // Try opening the file and reading data
-            Scanner scanner = new Scanner(new File(playersFilePath));
-            while (scanner.hasNext()) {
-                this.addPlayersFrom++;                                  // Keep track of what players are already in file, for updating at end
-
-                line = scanner.next();
-                parsedLine = line.split(",");                    // Split by commas to get individual data
-
-                newPlayer = new Player(
-                        parsedLine[0],
-                        Integer.parseInt(parsedLine[1]),
-                        Integer.parseInt(parsedLine[2]),
-                        Integer.parseInt(parsedLine[3]),
-                        Integer.parseInt(parsedLine[4]),
-                        Integer.parseInt(parsedLine[5])
-                );
-
-                allPlayers.addPlayer(newPlayer);
-            }
-            scanner.close();
-        }
-        catch (FileNotFoundException e) {
-            System.err.println("\nFile not found, exiting program");
-            System.exit(0);
-        }
-    }
-
-    /*
-    Adds all new players created to file, should run when game is quit
-    each line should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
-     */
-    void updatePlayers() {
-        final String playerFilePath = "./BullsAndCows/players.txt";
-
-        try {
-            FileOutputStream fileOut = new FileOutputStream(playerFilePath, true);
-
-            for (int i = this.addPlayersFrom; i < allPlayers.getPlayerCount(); i++) {       // Append all players to file, apart from ones already in
-                fileOut.write(formatPlayer(this.allPlayers.findPlayer(i)).getBytes());
-            }
-
-            fileOut.close();
-        }
-        catch (IOException e) {
-            System.err.println("\nFatal IO error; this shouldn't happen");
-            System.exit(0);
-        }                                    // file will already have been found by loadPlayers at beginning, so no need to catch again
-    }
-
-    /*
-    Formats a players data to be written to file
-    should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
-     */
-    private String formatPlayer(Player p) {
-        return p.getUsername() + "," + p.getBulls() + "," + p.getCows() + "," + p.getGuesses() + "," + p.getCodesAttempted() + "," + p.getCodesDeciphered() + "\n";
     }
 
     /*
@@ -233,12 +164,27 @@ public class Game {
 
                         case "/save":
                             System.out.println("\nSAVE CURRENT CODE FOR LATER");
-                            saveGuess();
+                            if (this.currentPlayer != null) {
+                                if (this.saveGame()) {
+                                    givenUp = true;
+                                    finishInputGuess = true;
+                                }
+                            } else {
+                                System.out.println("\nNo user logged in. You must be logged in to save and load games. Try /login.");
+                            }
+
                             break;
 
                         case "/load":
                             System.out.println("\nLOAD CODE FROM PREVIOUS");
-                            loadGame();
+                            if (this.currentPlayer != null) {
+                                if (this.loadGame()) {
+                                    this.currentPlayer.incrementCodesAttempted();
+                                }
+                            } else {
+                                System.out.println("\nNo user logged in. You must be logged in to save and load games. Try /login.");
+                            }
+
                             break;
 
                         case "/stats":
@@ -262,18 +208,19 @@ public class Game {
             // valid input has been given
             gameOver = givenUp;
 
-            if (!givenUp) {
+            if (!gameOver) {
                 if (submitGuess()) {
-                    System.out.println("\nYOUR GUESS WAS CORRECT!!!");
+                    System.out.println("\nCongratulations, your guess was correct!!!");
                     currentPlayer.incrementCodesDeciphered();
                     gameOver = true;
                 } else {
-                    System.out.println("\nYOUR GUESS WAS INCORRECT, TRY AGAIN");
+                    System.out.println("\nYour guess was incorrect, try again.");
                 }
             }
         }
+
         this.currentPlayer.incrementCodesAttempted();
-        updatePlayers();
+        this.allPlayers.saveNewPlayers();
         System.out.println("GAME FINISHED");
     }
 
@@ -482,12 +429,121 @@ public class Game {
         }
     }
 
-    void saveGuess(){
+    /*
+    Saves the current secret code game for user to try again later, then end game
+     */
+    private boolean saveGame(){
+        final DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+        final String playerSavePath = "./BullsAndCows/playerSaves/" + this.currentPlayer.getUsername() + ".txt";
 
+        try {
+            FileOutputStream fileOut = new FileOutputStream(playerSavePath, true);
+            fileOut.write(LocalDateTime.now().format(CUSTOM_FORMATTER).getBytes());
+            fileOut.write(this.showSolution(this.codeGame).getBytes());
+            fileOut.close();
+
+            return true;
+        }
+        catch (IOException e) {
+            System.err.println("\nFatal IO error; this shouldn't happen");
+            System.exit(0);
+        }
+
+        return false;
     }
 
-    void loadGame(){
+    /*
+    Load a game from users saved games, player validated by now, so currentPlayer never null
+    @returns boolean based on completion or not
+     */
+    private boolean loadGame(){
+        final String playerSavePath = "./BullsAndCows/playerSaves/" + this.currentPlayer.getUsername() + ".txt";
+        String datetime, savedCode;
+        ArrayList<String> readLines = new ArrayList<>();
 
+        try {
+            Scanner scanner = new Scanner(new File(playerSavePath));
+            while (scanner.hasNextLine()) {
+                readLines.add(scanner.nextLine());
+            }
+            scanner.close();
+
+            if (readLines.size() <= 1) {
+                System.out.println("\nNo saved codes for this user. Try saving the current game.");
+                return false;
+            } else {
+                return this.confirmLoadGame(readLines);
+            }
+        }
+        catch (IOException e) {
+            System.err.println("\nFatal IO error; this shouldn't happen");
+            System.exit(0);
+        }
+
+        return false;
+    }
+
+    private boolean confirmLoadGame(ArrayList<String> lines) {
+        StringBuilder loadOptions = getLoadOptions(lines);
+
+        while (true) {
+            System.out.println("\nGames saved for user: " + this.currentPlayer.getUsername());
+            System.out.println("\n" + loadOptions + "\n");
+
+            Scanner loadScan = inputScanner;
+            System.out.println("\nWhat game would you like to load? >>>");
+
+            String loadIndex = loadScan.nextLine();
+            if (loadIndex.compareTo("") == 0) {
+                System.out.println("\nLoad game cancelled.");
+                return false;
+            }
+
+            if (Integer.parseInt(loadIndex) > 0 && Integer.parseInt(loadIndex) <= (lines.size()/2)) {
+                String loadDate = lines.get( (Integer.parseInt(loadIndex) * 2) - 2 );
+                String loadCode = lines.get( (Integer.parseInt(loadIndex) * 2) - 1 );
+                System.out.println("\nLoading game from " + loadDate);
+
+                if (isNumeric(loadCode)) {
+                    this.codeGame = new NumbersCode(loadCode.toCharArray());
+                } else {
+                    this.codeGame = new LettersCode(loadCode.toCharArray());
+                }
+
+                return true;
+            } else {
+                System.out.println("\nOption out of range. Please select a valid option.\n");
+            }
+        }
+    }
+
+    private StringBuilder getLoadOptions(ArrayList<String> lines) {
+        StringBuilder loadOptions = new StringBuilder();
+
+        for (int i = 0; i < lines.size(); i += 2) {
+            int loadI = (i / 2) + 1;
+            String codeType;
+
+            if (isNumeric(lines.get(i+1))) {
+                codeType = "Number Code";
+            } else {
+                codeType = "Letter Code";
+            }
+
+            String gameSavedLine = "(" + loadI + ") Game Saved - " + lines.get(i) + " (" + codeType + ")\n";
+            loadOptions.append(gameSavedLine);
+        }
+
+        return loadOptions;
+    }
+
+    private boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
     }
 
     /*
@@ -497,7 +553,13 @@ public class Game {
     @return solution as String
     */
     private String showSolution(SecretCode secretCode){
-        return "";
+        StringBuilder solution = new StringBuilder();
+
+        for (char c : secretCode.getCode()) {
+            solution.append(String.valueOf(c));
+        }
+
+        return solution.toString();
     }
 
     /*

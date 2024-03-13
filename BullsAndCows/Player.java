@@ -1,5 +1,7 @@
 package BullsAndCows;
 
+import java.io.File;
+
 public class Player {
 
     private String username;
@@ -24,6 +26,16 @@ public class Player {
         numberOfGuesses = guesses;
         codesAttempted = attempted;
         codesDeciphered = deciphered;
+
+        this.createSavesLocation();
+    }
+
+    /*
+    Create a save file for this player's saved games
+     */
+    private void createSavesLocation() {
+        final String playerSavePath = "./BullsAndCows/playerSaves/";
+        new File(playerSavePath + this.username + ".txt" );
     }
 
     /*
