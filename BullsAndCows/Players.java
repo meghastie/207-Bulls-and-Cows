@@ -9,6 +9,10 @@ public class Players {
     private int addPlayersFrom;
 
 
+    public Players(ArrayList<Player> p){
+        allPlayers = p;
+    }
+
     public Players(){
         allPlayers = new ArrayList<>();
 
@@ -101,7 +105,7 @@ public class Players {
     @param targetUser   The username of the desired player
     @return             The player with the given username. Null if none found.
      */
-    Player findPlayer(String targetUser){
+    public Player findPlayer(String targetUser){
         for(Player p : this.allPlayers){
             if(p.getUsername().equalsIgnoreCase(targetUser)){
                 return p;
@@ -116,7 +120,7 @@ public class Players {
     @param targetIndex  The index of the desired player in allPlayers list
     @return             The player with the given index, or null if index out of bounds
      */
-    Player findPlayer(int targetIndex){
+    public Player findPlayer(int targetIndex){
         if (targetIndex >= this.allPlayers.size() || targetIndex < 0) {
             return null;
         }
@@ -131,7 +135,7 @@ public class Players {
 
     @returns The total number of Bulls
      */
-    int getAllPlayerBulls(){
+    public int getAllPlayerBulls(){
         int totalBulls = 0;
         for(Player p : allPlayers){
             totalBulls = totalBulls + p.getBulls();
@@ -144,7 +148,7 @@ public class Players {
 
     @returns The total number of Cows
      */
-    int getAllPlayerCows(){
+    public int getAllPlayerCows(){
         int totalCows = 0;
         for(Player p : allPlayers){
             totalCows = totalCows + p.getCows();
@@ -157,7 +161,7 @@ public class Players {
 
     @returns The total number of Secret Codes attempted
      */
-    int getAllPlayersSecretCodesAttempted(){
+    public int getAllPlayersSecretCodesAttempted(){
         int totalCodes = 0;
         for(Player p : allPlayers){
             totalCodes = totalCodes + p.getCodesAttempted();
@@ -170,7 +174,7 @@ public class Players {
 
     @returns The total number of Secret Codes deciphered
      */
-    int getAllPlayersSecretCodesDeciphered(){
+    public int getAllPlayersSecretCodesDeciphered(){
         int totalCodes = 0;
         for(Player p : allPlayers){
             totalCodes = totalCodes + p.getCodesDeciphered();
@@ -180,7 +184,7 @@ public class Players {
 
     //</editor-fold>
 
-    int getPlayerCount() {
+    public int getPlayerCount() {
         return this.allPlayers.size();
     }
 
@@ -189,7 +193,7 @@ public class Players {
 
     @returns An array holding the players doing the best
     */
-    Player[] getTopTen(){
+    public Player[] getTopTen(){
         Player[] topTen = new Player[10];
 
         for(Player p : allPlayers){
@@ -199,11 +203,12 @@ public class Players {
                     i++;
                 }
                 topTen[i] = p;
+                topTen = sortTopTenArray(topTen, i);
             }
             else{
                 if(p.getCodesDeciphered() > topTen[9].getCodesDeciphered()) {
                     topTen[9] = p;
-                    topTen = sortTopTenArray(topTen);
+                    topTen = sortTopTenArray(topTen, 9);
                 }
             }
         }
@@ -217,11 +222,12 @@ public class Players {
     @return         The sorted array of the top 10 players
 
     @param topTen   The unsorted array of the top 10 players
+    @param last     The last position in the array
     */
-    private Player[] sortTopTenArray(Player[] topTen){
-        int i = 9;
-        Player temp = topTen[9];
-        while(temp.getCodesDeciphered() > topTen[i-1].getCodesDeciphered() && i > 0){
+    private Player[] sortTopTenArray(Player[] topTen, int last){
+        int i = last;
+        Player temp = topTen[last];
+        while(i > 0 && temp.getCodesDeciphered() > topTen[i-1].getCodesDeciphered()){
             topTen[i] = topTen[i-1];
             i--;
         }

@@ -50,7 +50,7 @@ public class Player {
 
     @param Bulls The number of bulls added to the total
      */
-    void updateBulls(int Bulls){
+    public void updateBulls(int Bulls){
         numberOfBulls = numberOfBulls + Bulls;
     }
 
@@ -59,28 +59,28 @@ public class Player {
 
     @param Cows The number of cows added to the total
      */
-    void updateCows(int Cows){
+    public void updateCows(int Cows){
         numberOfCows = numberOfCows + Cows;
     }
 
     /*
     Increases the number of total guesses made by 1.
      */
-    void incrementGuesses(){
-        this.numberOfGuesses++;
+    public void incrementGuesses(){
+        this.numberOfGuesses = this.numberOfGuesses + 4;
     }
 
     /*
     Increases the number of total code attempts made by 1.
      */
-    void incrementCodesAttempted(){
+    public void incrementCodesAttempted(){
         this.codesAttempted++;
     }
 
     /*
     Increases the number of total code deciphered made by 1.
      */
-    void incrementCodesDeciphered(){
+    public void incrementCodesDeciphered(){
         this.codesDeciphered++;
     }
 
@@ -91,42 +91,42 @@ public class Player {
     /*
     returns players username.
      */
-    String getUsername() {
+    public String getUsername() {
         return this.username;
     }
 
     /*
     Returns number of bulls for specific player.
      */
-    int getBulls(){
+    public int getBulls(){
         return this.numberOfBulls;
     }
 
     /*
     Returns number of cows for specific player.
      */
-    int getCows(){
+    public int getCows(){
         return this.numberOfCows;
     }
 
     /*
     Returns number of guesses made by specific player.
      */
-    int getGuesses() {
+    public int getGuesses() {
         return this.numberOfGuesses;
     }
 
     /*
     Returns number of codes attempted for specific player.
      */
-    int getCodesAttempted(){
+    public int getCodesAttempted(){
         return this.codesAttempted;
     }
 
     /*
     Returns number of codes deciphered for specific player.
      */
-    int getCodesDeciphered(){
+    public int getCodesDeciphered(){
         return this.codesDeciphered;
     }
 
@@ -138,7 +138,7 @@ public class Player {
 
     @return The accuracy
      */
-    float bullsAccuracy(){
+    public float bullsAccuracy(){
         return ((float)(numberOfBulls * 100) / numberOfGuesses);
     }
 
@@ -147,7 +147,7 @@ public class Player {
 
     @return The accuracy
      */
-    float cowsAccuracy(){
+    public float cowsAccuracy(){
         return ((float)(numberOfCows * 100) / numberOfGuesses);
     }
 }
