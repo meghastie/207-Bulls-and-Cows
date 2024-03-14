@@ -20,26 +20,34 @@ public class Game {
     public int status = 0;
     private Scanner inputScanner;
 
-    public Game(Player p, String codeType){
+    //Testing Constructor
+    public Game(Player p, SecretCode setCode){
         this.currentPlayer = p;
+        this.codeGame = setCode;
+        allPlayers = new Players();
+        allPlayers.loadAllPlayers();
         resetGuess();
+        inputScanner = new Scanner(System.in);
     }
 
+    // old Testing Constructor
     public Game(SecretCode setCode){
         codeGame = setCode;
         resetGuess();
         inputScanner = new Scanner(System.in);
-        playGame();
     }
-
+    //old Testing Constructor
     public Game(Player p){
         this.currentPlayer = p;
+        allPlayers = new Players();
+        allPlayers.loadAllPlayers();
+        resetGuess();
+        inputScanner = new Scanner(System.in);
     }
 
     public Game(){
         resetGuess();
         inputScanner = new Scanner(System.in);
-        playGame();
     }
 
     /*
@@ -94,7 +102,8 @@ public class Game {
     Main game loop for one "round" each time function is called
     @param is the game type a number game? (True -> number game, False -> letter game)
     */
-    void playGame() {                       // Main game loop (Noa)
+    public void playGame() {
+        // Main game loop (Noa)
         // introduce game
         System.out.println("\n\nWelcome to Bulls and Cows. Please alter and submit your guess, or type /help for instructions of how to play.");
 
@@ -117,8 +126,10 @@ public class Game {
                 //inputScanner = new Scanner(System.in);
                 System.out.println("\n\nCurrent Guess: " + showGuess() + "\n>>> ");
                 userInput = inputScanner.nextLine();            // receive input
-
-                if (userInput.charAt(0) != '/') {               // input is not a user command
+                if(userInput == null || userInput.isEmpty()){
+                    System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
+                }
+                else if (userInput.charAt(0) != '/') {               // input is not a user command
                     ArrayList<String> completedChanges = inputGuessChange(userInput);
                     if (completedChanges.isEmpty()) {
                         System.out.println("\nNo changes completed, maybe input had incorrect format?");
@@ -229,20 +240,25 @@ public class Game {
     Prints the instructions
      */
     private void printInstructions(){
-        final String instructions =   "\nHOW TO PLAY\n\nYou are tasked with deciphering a secret code, consisting of either 4 different numbers or " +
-                "letters.\nEach guess you make, you will be shown how many 'Bulls' and 'Cows' you managed to get, meaning how " +
-                "many numbers / letters you got correct & in the right position, and how many you just got correct, " +
-                "respectively.\nCOMMANDS\n\nYou begin with an empty guess. To set one of the characters in your guess, type the " +
-                "letter / number you wish to guess, followed by the position to put that guess (between 1 and 4), e.g. a4. To " +
-                "change more than one position at a time, simply enter a comma followed by your next guess, e.g. a4,g1,h3. Note " +
-                "there are no spaces\nOther commands are as follows:\n\t/login -\tLogin or create an account to save your " +
-                "score and statistics, and maybe you can top the leaderboard!\n\t/hint -\tIf you are stuck, receive a hint for your " +
-                "guess\n\t/giveup -\tIf you are really stuck, you can give up and see the solution\n\t/guess -\tSubmit your " +
-                "completed guess, all positions of your guess must be filled.\n\t/undo -\t If you want to undo a " +
-                "change you've made to your guess (only one undo can be made to any given position).\n\t/save -\tSave the secret " +
-                "code you are currently guessing to try again later.\n\t/load -\tLoad a previous secret code to resume guessing.\n\t" +
-                "/stats -\tView game play statistics, such as accuracy over all games.\n\t/quit -\tQuit current game without saving " +
-                "or completing guess.";
+        final String instructions = """
+
+                HOW TO PLAY
+
+                You are tasked with deciphering a secret code, consisting of either 4 different numbers or letters.
+                Each guess you make, you will be shown how many 'Bulls' and 'Cows' you managed to get, meaning how many numbers / letters you got correct & in the right position, and how many you just got correct, respectively.
+                COMMANDS
+
+                You begin with an empty guess. To set one of the characters in your guess, type the letter / number you wish to guess, followed by the position to put that guess (between 1 and 4), e.g. a4. To change more than one position at a time, simply enter a comma followed by your next guess, e.g. a4,g1,h3. Note there are no spaces
+                Other commands are as follows:
+                \t/login -\tLogin or create an account to save your score and statistics, and maybe you can top the leaderboard!
+                \t/hint -\tIf you are stuck, receive a hint for your guess
+                \t/giveup -\tIf you are really stuck, you can give up and see the solution
+                \t/guess -\tSubmit your completed guess, all positions of your guess must be filled.
+                \t/undo -\t If you want to undo a change you've made to your guess (only one undo can be made to any given position).
+                \t/save -\tSave the secret code you are currently guessing to try again later.
+                \t/load -\tLoad a previous secret code to resume guessing.
+                \t/stats -\tView game play statistics, such as accuracy over all games.
+                \t/quit -\tQuit current game without saving or completing guess.""";
 
         System.out.println(instructions);
     }
@@ -260,7 +276,14 @@ public class Game {
 
         for (int i = 0; i < userInput.length(); i += 3) {
             char inputChangeChar = userInput.charAt(i);
-            int inputChangePos = Integer.parseInt(String.valueOf(userInput.charAt(i + 1))) -1;
+            int inputChangePos;
+            try {
+                inputChangePos = Integer.parseInt(String.valueOf(userInput.charAt(i + 1))) - 1;
+            }
+            catch(NumberFormatException e){
+                System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
+                return new ArrayList<>();
+            }
 
             try {
                 enterGuess(inputChangePos, inputChangeChar);
@@ -663,5 +686,9 @@ public class Game {
             System.out.println("USER: " + topTen[i].getUsername() + "\tSCORED: " + topTen[i].getCodesDeciphered());
             i++;
         }
+    }
+
+    public char[] getGuess() {
+        return Guess;
     }
 }
