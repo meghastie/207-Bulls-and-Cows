@@ -648,23 +648,20 @@ public class Game {
         System.out.println("CODES ATTEMPTED: " + p.getCodesAttempted());
         System.out.println("CODES COMPLETED: " + p.getCodesDeciphered());
         System.out.println("BULLS:           " + p.getBulls());
-
-        System.out.println("ACCURACY:        ");
         if(isNaN(p.bullsAccuracy())){
-            System.out.print("N/A");
+            System.out.println("ACCURACY:        N/A");
         }
         else{
-            System.out.print(new DecimalFormat("#.##").format(p.bullsAccuracy()) + "%");
+            System.out.print("ACCURACY:        "+new DecimalFormat("#.##").format(p.bullsAccuracy()) + "%\n");
         }
 
         System.out.println("COWS:            " + p.getCows());
 
-        System.out.println("ACCURACY:        ");
         if(isNaN(p.cowsAccuracy())){
-            System.out.print("N/A");
+            System.out.println("ACCURACY:        N/A");
         }
         else{
-            System.out.print(new DecimalFormat("#.##").format(p.cowsAccuracy()) + "%");
+            System.out.print("ACCURACY:        "+ new DecimalFormat("#.##").format(p.cowsAccuracy()) + "%\n");
         }
 
         System.out.println();
