@@ -681,10 +681,11 @@ public class Game {
             System.out.println("Bulls: " + bullsCows[0]);
             System.out.println("Cows: " + bullsCows[1]);
 
-            currentPlayer.updateBulls(bullsCows[0]);
-            currentPlayer.updateCows(bullsCows[1]);
-            currentPlayer.incrementGuesses();
-
+            if(currentPlayer != null) {
+                currentPlayer.updateBulls(bullsCows[0]);
+                currentPlayer.updateCows(bullsCows[1]);
+                currentPlayer.incrementGuesses();
+            }
             return bullsCows[0] == 4;
         }
 
