@@ -93,7 +93,7 @@ public class Players {
      */
     Player findPlayer(String targetUser){
         for(Player p : this.allPlayers){
-            if(p.getUsername().equals(targetUser)){
+            if(p.getUsername().equalsIgnoreCase(targetUser)){
                 return p;
             }
         }
