@@ -46,6 +46,8 @@ public class Game {
     }
 
     public Game(){
+        allPlayers = new Players();
+        allPlayers.loadAllPlayers();
         resetGuess();
         inputScanner = new Scanner(System.in);
     }
