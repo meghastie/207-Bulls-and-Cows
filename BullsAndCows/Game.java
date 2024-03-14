@@ -13,12 +13,19 @@ import static java.lang.Float.isNaN;
 
 public class Game {
 
+    //<editor-fold desc="Fields">
+
     private Player currentPlayer;
     private Players allPlayers;
     private char[] Guess, preChangeGuess;
     private SecretCode codeGame;
     public int status = 0;
     private Scanner inputScanner;
+
+    //</editor-fold>
+
+
+    //<editor-fold desc="Constructors">
 
     //Testing Constructor
     public Game(Player p, SecretCode setCode){
@@ -52,6 +59,9 @@ public class Game {
         inputScanner = new Scanner(System.in);
     }
 
+    //</editor-folds>
+
+
     /*
    Get a hint from the secret code and return
 
@@ -66,21 +76,6 @@ public class Game {
     }
 
 
-    /*
-    Resets the current guess for making a new guess
-     */
-    void resetGuess() {
-        this.Guess = new char[]{'\0', '\0', '\0', '\0'};
-        this.preChangeGuess = new char[]{'\0', '\0', '\0', '\0'};
-    }
-
-    /*
-    Formats the array as a string to output
-    @return formatted string of Guess array
-     */
-    String showGuess() {
-        return "[ " + this.Guess[0] + " ] [ " + this.Guess[1] + " ] [ " + this.Guess[2] + " ] [ " + this.Guess[3] + " ]";
-    }
 
     /*
     Main game loop for one "round" each time function is called
@@ -333,6 +328,112 @@ public class Game {
         System.out.println(instructions);
     }
 
+
+    //<editor-fold desc="Account Actions">
+    public char[] getGuess() {
+        return Guess;
+    }
+
+    /*
+    Gives the user the option to log-in.
+    */
+    private void requestLogin() {
+        boolean loggedIn = false;
+
+        while (loggedIn == false) {
+
+            System.out.println("\nPlease choose one of the following:");
+            System.out.println("1. Log in");
+            System.out.println("2. Create account");
+            System.out.println("3. Continue as guest");
+            System.out.println("\n>");
+
+            String option = inputScanner.nextLine();
+
+
+            switch (option) {
+                case "1":
+                    // Log In
+                    break;
+
+                case "2":
+                    // Sign Up
+                    break;
+
+                case "3":
+                    loggedIn = true;
+                    break;
+
+                default:
+                    System.out.println("Invalid option!");
+
+            }
+        }
+    }
+    /*
+    Gives the user the option to either back out to 'requestLogin' or try and login to an existing account.
+
+    @return If the user has logged into an existing account
+    */
+
+    private boolean logIn(){
+        for(;;){
+            System.out.println("\nEnter your username or type \"back\" to return:");
+            System.out.println("\n>");
+            String userInput = inputScanner.nextLine();
+
+            if(userInput.equals("back")){
+                return false;
+            } else {
+                Player logInAttempt = allPlayers.findPlayer(userInput);
+
+                if (logInAttempt != null){
+                    currentPlayer = logInAttempt;
+                    System.out.println("\nLog in successful!");
+                    return true;
+                }
+            }
+        }
+    }
+    /*
+    Prompts the user to create an account and checks if the given username is valid
+
+    @return If the account was successfully created
+    */
+
+    private boolean createAccount(){
+        for(;;) {
+            System.out.println("\nPlease enter the username you would like, or \"back\" to return:");
+            System.out.println("\n>");
+            String newUsername = inputScanner.nextLine();
+
+            if(newUsername.equals("back")){
+                return false;
+            }
+            else {
+                if (allPlayers.findPlayer(newUsername) == null) {
+                    newAccount(newUsername);
+                    System.out.println("\nAccount created!");
+                    return true;
+                } else {
+                    System.out.println("\nThis username is already taken!");
+                }
+            }
+        }
+    }
+    /*
+    Creates a new instance of the player account and adds it to the list of players
+
+    @param newUsername  The username of the account to be created
+    */
+
+    private void newAccount(String newUsername){
+        currentPlayer = new Player(newUsername);
+        allPlayers.addPlayer(currentPlayer);
+    }
+
+    //</editor-fold>
+
     /*
     Create account for / log in the user
     @return true if login not cancelled by user
@@ -359,46 +460,10 @@ public class Game {
         }
     }
 
-    /*
-    Check if the user input is valid for changing the guess, any invalid inputs are skipped
-    @return array list of completed changes
-     */
-    private ArrayList<String> inputGuessChange(String userInput) {
-        if (userInput.contains(" ") || userInput.contains("-") || userInput.length() < 2 || (userInput.length() > 2 && (userInput.length()+1) % 3 != 0)) {
-            return new ArrayList<>();
-        }
-
-        ArrayList<String> completed = new ArrayList<>();
-
-        for (int i = 0; i < userInput.length(); i += 3) {
-            char inputChangeChar = userInput.charAt(i);
-            int inputChangePos;
-            try {
-                inputChangePos = Integer.parseInt(String.valueOf(userInput.charAt(i + 1))) - 1;
-            }
-            catch(NumberFormatException e){
-                System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
-                return new ArrayList<>();
-            }
-
-            try {
-                enterGuess(inputChangePos, inputChangeChar);
-                completed.add(userInput.substring(i, i+2));
-            } catch (ArrayIndexOutOfBoundsException err) {
-                System.out.println("\nError in changing guess: Position '" + inputChangePos + "' was not a valid position.");
-            } catch (IllegalArgumentException err) {
-                System.out.println("\nError in changing guess: " + err);
-            } catch (RuntimeException err) {
-                System.out.println("\nError in classes: " + err);
-            }
-        }
-
-        return completed;
-    }
 
     /*
-    Requests the user to select one of the two game-types
-    */
+   Requests the user to select one of the two game-types
+   */
     public void gameSelection(){
         boolean check = true;
         while(check){
@@ -458,32 +523,65 @@ public class Game {
         }
     }
 
-    /*
-    Helper function for confirming the user wishes to undo guess
 
-    @return If user wants to undo guess
-     */
-    private boolean undoConfirmation() {
-        while (true) {
-            Scanner undoScan = inputScanner;
-            System.out.println("\nWhat position of your guess do you wish to undo? >>>");
-
-            String undoPos = undoScan.nextLine();
-            if (undoPos.compareTo("") == 0) {
-                return false;
-            }
-
-            if (Integer.parseInt(undoPos) >= 1 && Integer.parseInt(undoPos) <= 4) {
-                undoGuess(Integer.parseInt(undoPos) - 1);
-                return true;
-            } else {
-                System.out.println("\nError: Please choose a position between 1 and 4, or press ENTER to exit\n");
-            }
-        }
-    }
 
     void requestCode(){
-        
+
+    }
+
+    //<editor-fold desc="Guess Actions">
+
+    /*
+    Formats the array as a string to output
+    @return formatted string of Guess array
+     */
+    String showGuess() {
+        return "[ " + this.Guess[0] + " ] [ " + this.Guess[1] + " ] [ " + this.Guess[2] + " ] [ " + this.Guess[3] + " ]";
+    }
+
+    /*
+    Resets the current guess for making a new guess
+     */
+    void resetGuess() {
+        this.Guess = new char[]{'\0', '\0', '\0', '\0'};
+        this.preChangeGuess = new char[]{'\0', '\0', '\0', '\0'};
+    }
+
+    /*
+    Check if the user input is valid for changing the guess, any invalid inputs are skipped
+    @return array list of completed changes
+     */
+    private ArrayList<String> inputGuessChange(String userInput) {
+        if (userInput.contains(" ") || userInput.contains("-") || userInput.length() < 2 || (userInput.length() > 2 && (userInput.length()+1) % 3 != 0)) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<String> completed = new ArrayList<>();
+
+        for (int i = 0; i < userInput.length(); i += 3) {
+            char inputChangeChar = userInput.charAt(i);
+            int inputChangePos;
+            try {
+                inputChangePos = Integer.parseInt(String.valueOf(userInput.charAt(i + 1))) - 1;
+            }
+            catch(NumberFormatException e){
+                System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
+                return new ArrayList<>();
+            }
+
+            try {
+                enterGuess(inputChangePos, inputChangeChar);
+                completed.add(userInput.substring(i, i+2));
+            } catch (ArrayIndexOutOfBoundsException err) {
+                System.out.println("\nError in changing guess: Position '" + inputChangePos + "' was not a valid position.");
+            } catch (IllegalArgumentException err) {
+                System.out.println("\nError in changing guess: " + err);
+            } catch (RuntimeException err) {
+                System.out.println("\nError in classes: " + err);
+            }
+        }
+
+        return completed;
     }
 
     /*
@@ -528,7 +626,7 @@ public class Game {
     @return true if guess matches code
     */
     private boolean submitGuess(){
-        if(validateInput()){
+        if(validateGuessInput()){
             int[] bullsCows = codeGame.compareCode(Guess);
             System.out.println("Bulls: " + bullsCows[0]);
             System.out.println("Cows: " + bullsCows[1]);
@@ -554,6 +652,60 @@ public class Game {
             Guess[position] = preChangeGuess[position];
         }
     }
+
+    /*
+       Checks the Guess for empty positions and duplicate values
+
+       @return true if Guess contains none of the above
+       */
+    private boolean validateGuessInput(){
+
+        for(int i = 0; i<4; i++){
+
+            // Checks for missing value
+            if(Guess[i] == '\0'){
+                System.out.println("Missing value at position " + i);
+                return false;
+            }
+
+            // Checks for duplicate values
+            for (int j = i + 1; j<4; j++) {
+                if (Guess[i] == Guess[j]) {
+                    System.out.println("Duplicate value present at positions " + i + " & " + j);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /*
+   Helper function for confirming the user wishes to undo guess
+
+   @return If user wants to undo guess
+    */
+    private boolean undoConfirmation() {
+        while (true) {
+            Scanner undoScan = inputScanner;
+            System.out.println("\nWhat position of your guess do you wish to undo? >>>");
+
+            String undoPos = undoScan.nextLine();
+            if (undoPos.compareTo("") == 0) {
+                return false;
+            }
+
+            if (Integer.parseInt(undoPos) >= 1 && Integer.parseInt(undoPos) <= 4) {
+                undoGuess(Integer.parseInt(undoPos) - 1);
+                return true;
+            } else {
+                System.out.println("\nError: Please choose a position between 1 and 4, or press ENTER to exit\n");
+            }
+        }
+    }
+
+    //</editor-fold>
+
 
     /*
     Saves the current secret code game for user to try again later, then end game
@@ -696,32 +848,8 @@ public class Game {
         return solution.toString();
     }
 
-    /*
-    Checks the Guess for empty positions and duplicate values
 
-    @return true if Guess contains none of the above
-    */
-    private boolean validateInput(){
-
-        for(int i = 0; i<4; i++){
-
-            // Checks for missing value
-            if(Guess[i] == '\0'){
-                System.out.println("Missing value at position " + i);
-                return false;
-            }
-
-            // Checks for duplicate values
-            for (int j = i + 1; j<4; j++) {
-                if (Guess[i] == Guess[j]) {
-                    System.out.println("Duplicate value present at positions " + i + " & " + j);
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
+    //<editor-fold desc="Display Statistics">
 
     /*
     Prints all of a user's details
@@ -796,7 +924,5 @@ public class Game {
         }
     }
 
-    public char[] getGuess() {
-        return Guess;
-    }
+    //</editor-fold>
 }

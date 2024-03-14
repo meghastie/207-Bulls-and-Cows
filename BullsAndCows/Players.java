@@ -16,6 +16,7 @@ public class Players {
         loadAllPlayers();
     }
 
+    //<editor-fold desc="Manage List">
     public void addPlayer(Player p){
         this.allPlayers.add(p);
     }
@@ -92,6 +93,8 @@ public class Players {
         }
     }
 
+    //</editor-fold>
+
     /*
     Searches the list of all users for the player with the given username
 
@@ -120,6 +123,8 @@ public class Players {
 
         return this.allPlayers.get(targetIndex);
     }
+
+    //<editor-fold desc="Get Cumulative"
 
     /*
     Sums the total number of Bulls achieved by all stored players
@@ -172,6 +177,8 @@ public class Players {
         }
         return totalCodes;
     }
+
+    //</editor-fold>
 
     int getPlayerCount() {
         return this.allPlayers.size();

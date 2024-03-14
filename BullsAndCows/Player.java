@@ -4,13 +4,16 @@ import java.io.File;
 
 public class Player {
 
+    //<editor-fold desc="Fields">
     private String username;
     private int numberOfBulls;
     private int numberOfCows;
     private int numberOfGuesses;
     private int codesAttempted;
     private int codesDeciphered;
+    //</editor-fold>
 
+    //<editor-fold desc="constructors">
     public Player(){
 
     }
@@ -30,6 +33,8 @@ public class Player {
         this.createSavesLocation();
     }
 
+    //</editor-fold>
+
     /*
     Create a save file for this player's saved games
      */
@@ -37,6 +42,8 @@ public class Player {
         final String playerSavePath = "./BullsAndCows/playerSaves/";
         new File(playerSavePath + this.username + ".txt");
     }
+
+    //<editor-fold desc = "Setters">
 
     /*
     Increases the number of Bulls by the given amount
@@ -77,6 +84,10 @@ public class Player {
         this.codesDeciphered++;
     }
 
+    //</editor-fold>
+
+
+    //<editor-fold desc="Getters">
     /*
     returns players username.
      */
@@ -118,6 +129,9 @@ public class Player {
     int getCodesDeciphered(){
         return this.codesDeciphered;
     }
+
+    //</editor-fold>
+
 
     /*
     Calculates the accuracy of bulls as a percentage of the total number of characters guessed
