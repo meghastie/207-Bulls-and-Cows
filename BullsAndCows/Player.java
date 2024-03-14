@@ -35,7 +35,7 @@ public class Player {
      */
     private void createSavesLocation() {
         final String playerSavePath = "./BullsAndCows/playerSaves/";
-        new File(playerSavePath + this.username + ".txt" );
+        new File(playerSavePath + this.username + ".txt");
     }
 
     /*

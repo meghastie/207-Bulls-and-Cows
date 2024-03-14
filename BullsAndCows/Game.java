@@ -63,24 +63,6 @@ public class Game {
         return codeGame;
     }
 
-    /*
-    Create account for / log in the user (load player), if not already logged in
-    @param the username the user wants to log in as
-     */
-    void loadPlayer(String loginUser) {
-        if (this.currentPlayer != null) {                                       // if logged in already
-            System.out.println("\nAlready logged in as user: " + this.currentPlayer.getUsername() + ". Try exiting current game?");
-        } else {
-            this.currentPlayer = this.allPlayers.findPlayer(loginUser);         // null if user doesnt exist
-
-            if (this.currentPlayer == null) {                                   // if player does not exist
-                this.currentPlayer = new Player(loginUser);
-                System.out.println("\nCreating account with username: " + loginUser);
-            } else {                                                            // player exists
-                System.out.println("\nLogging in as user: " + loginUser);
-            }
-        }
-    }
 
     /*
     Resets the current guess for making a new guess
@@ -142,7 +124,11 @@ public class Game {
                     switch (userInput.toLowerCase()) {          // cases for all user commands
 
                         case "/login":
-                            System.out.println("\nLOGIN USER");
+                            if (loginUser()) {
+                                System.out.println("\nLogged in as: " + this.currentPlayer.getUsername());
+                            } else {
+                                System.out.println("\nLogin cancelled.");
+                            }
                             break;
 
                         case "/help":
@@ -167,14 +153,13 @@ public class Game {
 
                         case "/undo":
                             if (undoConfirmation()) {
-                                System.out.println("\nUNDO CONFIRMED");
+                                System.out.println("\nUndo Confirmed.");
                             } else {
-                                System.out.println("\nUNDO CANCELLED");
+                                System.out.println("\nUndo Cancelled.");
                             }
                             break;
 
                         case "/save":
-                            System.out.println("\nSAVE CURRENT CODE FOR LATER");
                             if (this.currentPlayer != null) {
                                 if (this.saveGame()) {
                                     givenUp = true;
@@ -187,7 +172,6 @@ public class Game {
                             break;
 
                         case "/load":
-                            System.out.println("\nLOAD CODE FROM PREVIOUS");
                             if (this.currentPlayer != null) {
                                 if (this.loadGame()) {
                                     this.currentPlayer.incrementCodesAttempted();
@@ -199,12 +183,11 @@ public class Game {
                             break;
 
                         case "/stats":
-                            System.out.println("\nMY CURRENT STATS");
                             print_player_details(this.currentPlayer);
                             break;
 
                         case "/quit":
-                            System.out.println("\nQUITING GAME");
+                            System.out.println("\nQuitting current game.");
                             givenUp = true;
                             finishInputGuess = true;
                             break;
@@ -232,7 +215,7 @@ public class Game {
 
         this.currentPlayer.incrementCodesAttempted();
         this.allPlayers.saveUpdatedPlayers();
-        System.out.println("GAME FINISHED");
+        System.out.println("\n\nGame Over :)");
     }
 
 
@@ -261,6 +244,32 @@ public class Game {
                 \t/quit -\tQuit current game without saving or completing guess.""";
 
         System.out.println(instructions);
+    }
+
+    /*
+    Create account for / log in the user
+    @return true if login not cancelled by user
+     */
+    private boolean loginUser() {
+        if (this.currentPlayer != null) {
+            System.out.println("\nWarning: This will log out user (" + this.currentPlayer.getUsername() + ")");
+        }
+        System.out.println("\nEnter the user you wish to login >>>");
+
+        String userLogin = inputScanner.nextLine();
+
+        if (userLogin.compareTo("") == 0) {
+            return false;
+        } else {
+            this.currentPlayer = this.allPlayers.findPlayer(userLogin);
+
+            if (this.currentPlayer == null) {
+                this.currentPlayer = new Player(userLogin);
+                System.out.println("\nCreating account with username: " + userLogin);
+            }
+
+            return true;
+        }
     }
 
     /*
