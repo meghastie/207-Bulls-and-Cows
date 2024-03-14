@@ -328,6 +328,52 @@ public class Game {
         System.out.println(instructions);
     }
 
+    /*
+    Requests the user to select the type of game, or load an existing save
+
+    @return If the user has created game. Will be false if they wish to back out of selection.
+     */
+    private boolean newGame() {
+        for(;;) {
+
+            System.out.println("\nWhat kind of code would you like? type \"back\" to return");
+            System.out.println("1. Number code");
+            System.out.println("2. Letter code");
+            if (currentPlayer != null) {
+                System.out.println("3. Load saved code");
+            }
+
+            System.out.println("\n>");
+
+            String userInput = inputScanner.nextLine();
+
+            switch(userInput){
+                case "back":
+                    return false;
+
+                case "1":
+                    codeGame = new NumbersCode();
+                    System.out.println("\nNew number based code game created!");
+                    return true;
+
+                case "2":
+                    codeGame = new LettersCode();
+                    System.out.println("\nNew number based code game created!");
+                    return true;
+
+                case "3":
+                    if(currentPlayer != null){
+                        if(loadGame()) {
+                            return true;
+                        }
+                        break;
+                    }
+
+                default:
+                    System.out.println("\nInvalid Option!");
+            }
+        }
+    }
 
     //<editor-fold desc="Account Actions">
     public char[] getGuess() {
@@ -370,12 +416,12 @@ public class Game {
             }
         }
     }
+
     /*
     Gives the user the option to either back out to 'requestLogin' or try and login to an existing account.
 
     @return If the user has logged into an existing account
     */
-
     private boolean logIn(){
         for(;;){
             System.out.println("\nEnter your username or type \"back\" to return:");
@@ -395,12 +441,12 @@ public class Game {
             }
         }
     }
+
     /*
     Prompts the user to create an account and checks if the given username is valid
 
     @return If the account was successfully created
     */
-
     private boolean createAccount(){
         for(;;) {
             System.out.println("\nPlease enter the username you would like, or \"back\" to return:");
@@ -421,12 +467,12 @@ public class Game {
             }
         }
     }
+
     /*
     Creates a new instance of the player account and adds it to the list of players
 
     @param newUsername  The username of the account to be created
     */
-
     private void newAccount(String newUsername){
         currentPlayer = new Player(newUsername);
         allPlayers.addPlayer(currentPlayer);
@@ -460,6 +506,12 @@ public class Game {
         }
     }
 
+    /*
+    I'll leave this empty for you to fill Noah. Or anyone else who wants to.
+    */
+    void guessingCode(){
+
+    }
 
     /*
    Requests the user to select one of the two game-types
@@ -522,8 +574,6 @@ public class Game {
             }
         }
     }
-
-
 
     void requestCode(){
 
@@ -706,6 +756,7 @@ public class Game {
 
     //</editor-fold>
 
+    //<editor-fold desc="Saving and Loading codes">
 
     /*
     Saves the current secret code game for user to try again later, then end game
@@ -747,7 +798,7 @@ public class Game {
             scanner.close();
 
             if (readLines.size() <= 1) {
-                System.out.println("\nNo saved codes for this user. Try saving the current game.");
+                System.out.println("\nNo saved codes for this user!");
                 return false;
             } else {
                 return this.confirmLoadGame(readLines);
@@ -774,10 +825,10 @@ public class Game {
             System.out.println("\n" + loadOptions + "\n");
 
             Scanner loadScan = inputScanner;
-            System.out.println("\nWhat game would you like to load? >>>");
+            System.out.println("\nWhat game would you like to load? type \"back\" to return >>>");
 
             String loadIndex = loadScan.nextLine();
-            if (loadIndex.compareTo("") == 0) {
+            if (loadIndex.compareTo("back") == 0) {
                 System.out.println("\nLoad game cancelled.");
                 return false;
             }
@@ -789,8 +840,10 @@ public class Game {
 
                 if (isNumeric(loadCode)) {
                     this.codeGame = new NumbersCode(loadCode.toCharArray());
+                    System.out.println("\nNumber code loaded");
                 } else {
                     this.codeGame = new LettersCode(loadCode.toCharArray());
+                    System.out.println("\nLetter code loaded");
                 }
 
                 return true;
@@ -831,6 +884,8 @@ public class Game {
             return false;
         }
     }
+
+    //</editor-fold>
 
     /*
     Gets solution from secret code class and returns
