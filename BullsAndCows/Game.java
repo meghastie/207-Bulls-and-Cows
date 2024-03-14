@@ -89,19 +89,104 @@ public class Game {
     public void playGame() {
         // Main game loop (Noa)
         // introduce game
-        System.out.println("\n\nWelcome to Bulls and Cows. Please alter and submit your guess, or type /help for instructions of how to play.");
+
+        System.out.println("\n\nWelcome to Bulls and Cows. Please alter and submit your guess, or type /help for instructions of how to play. To start, enter 'game'");
 
         // local variables
         boolean gameOver, finishInputGuess, givenUp;
         String userInput;
+        /*
+        Switch statement inputted twice: allows user to log in/help/ any other commands before they start the game. if the user wants to just play the game straight away, they just input 'game'
+         */
+        do {
+            userInput = inputScanner.nextLine();
 
-        // create an instance of chosen secret code
-        //if (isNumberGame) {codeGame = new NumbersCode();} else {codeGame = new LettersCode();}
-        if(codeGame == null) {
-            gameSelection();
-        }
+            if (codeGame == null) {
+                switch (userInput.toLowerCase()) {          // cases for all user commands
+
+                    case "/login":
+                        if (loginUser()) {
+                            System.out.println("\nLogged in as: " + this.currentPlayer.getUsername());
+                        } else {
+                            System.out.println("\nLogin cancelled.");
+                        }
+                        break;
+
+                    case "/help":
+                        printInstructions();
+                        break;
+
+                    case "/guess":
+                        finishInputGuess = true;
+                        break;
+
+                    case "/hint":
+                        System.out.println(getHint());
+                        break;
+
+                    case "/giveup":
+                        if (giveUpConfirmation()) {
+                            System.out.println("\nSolution: " + showSolution(codeGame));
+                            givenUp = true;
+                            finishInputGuess = true;
+                        }
+                        break;
+
+                    case "/undo":
+                        if (undoConfirmation()) {
+                            System.out.println("\nUndo Confirmed.");
+                        } else {
+                            System.out.println("\nUndo Cancelled.");
+                        }
+                        break;
+
+                    case "/save":
+                        if (this.currentPlayer != null) {
+                            if (this.saveGame()) {
+                                givenUp = true;
+                                finishInputGuess = true;
+                            }
+                        } else {
+                            System.out.println("\nNo user logged in. You must be logged in to save and load games. Try /login.");
+                        }
+
+                        break;
+
+                    case "/load":
+                        if (this.currentPlayer != null) {
+                            if (this.loadGame()) {
+                                this.currentPlayer.incrementCodesAttempted();
+                            }
+                        } else {
+                            System.out.println("\nNo user logged in. You must be logged in to save and load games. Try /login.");
+                        }
+
+                        break;
+
+                    case "/stats":
+                        print_player_details(this.currentPlayer);
+                        break;
+
+                    case "/quit":
+                        System.out.println("\nQuitting current game.");
+                        givenUp = true;
+                        finishInputGuess = true;
+                        break;
+
+                    case "game":
+                        gameSelection();
+                        break;
+
+                    default:                                // case when input is not recognised
+                        System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
+                        break;
+
+                }
+            }
+        } while (!userInput.equalsIgnoreCase("game"));
 
         gameOver = false;
+
         while (!gameOver) {                                     // begin game loop
             finishInputGuess = false;
             givenUp = false;
@@ -318,7 +403,7 @@ public class Game {
         boolean check = true;
         while(check){
             //inputScanner = new Scanner(System.in);
-            System.out.println("What type of game do you want ot play? number or letter?");
+            System.out.println("What type of game do you want to play? number or letter?");
             String input = inputScanner.nextLine().toLowerCase();
             switch(input){
                 case "help":
