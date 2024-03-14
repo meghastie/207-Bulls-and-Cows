@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class LettersCode extends SecretCode{
-    final String filePath = "./BullsAndCows/words.txt";
+    final String filePath = "BullsAndCows/words.txt";
     private List<String> word; //holds the 15 options of words from file
     //String gameWord the random word chosen for the game
     //code storage is already part of secret code
