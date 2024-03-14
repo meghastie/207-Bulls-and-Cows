@@ -79,7 +79,11 @@ public class Players {
             }
             writer.close();
         }
-        catch (IOException e) {
+        catch (FileNotFoundException e) {
+            System.err.println("File not found, exiting program");
+            System.exit(0);
+        }
+        catch (IOException e){
             System.err.println("File not found, exiting program");
             System.exit(0);
         }
