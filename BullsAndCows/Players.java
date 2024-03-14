@@ -58,28 +58,6 @@ public class Players {
     }
 
     /*
-    Adds all new players created to file, should run when game is quit
-    each line should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
-     */
-    void saveNewPlayers() {
-        final String playerFilePath = "./BullsAndCows/players.txt";
-
-        try {
-            FileOutputStream fileOut = new FileOutputStream(playerFilePath, true);
-
-            for (int i = this.addPlayersFrom; i < this.allPlayers.size(); i++) {       // Append all players to file, apart from ones already in
-                fileOut.write(formatPlayer(this.allPlayers.get(i)).getBytes());
-            }
-
-            fileOut.close();
-        }
-        catch (IOException e) {
-            System.err.println("\nFatal IO error; this shouldn't happen");
-            System.exit(0);
-        }                                    // file will already have been found by loadPlayers at beginning, so no need to catch again
-    }
-
-    /*
     Formats a players data to be written to file
     should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
      */
@@ -87,12 +65,17 @@ public class Players {
         return p.getUsername() + "," + p.getBulls() + "," + p.getCows() + "," + p.getGuesses() + "," + p.getCodesAttempted() + "," + p.getCodesDeciphered() + "\n";
     }
 
-    public void savePlayers() {
+    /*
+    Adds all new players created to file, should run when game is quit
+    each line should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
+     */
+    public void saveUpdatedPlayers() {
         try {
-            String filePath = "Players.txt";
-            FileWriter writer = new FileWriter(filePath);
+            String playerFilePath = "./BullsAndCows/players.txt";
+            FileWriter writer = new FileWriter(playerFilePath);
+
             for (Player p : this.allPlayers) {
-                writer.write(p.getUsername() + "," + p.getBulls() + "," + p.getCows() + "," + p.getGuesses() + "," + p.getCodesAttempted() + "," + p.getCodesDeciphered() + "\n");
+                writer.write(formatPlayer(p));
             }
             writer.close();
         }

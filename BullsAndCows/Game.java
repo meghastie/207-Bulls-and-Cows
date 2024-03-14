@@ -220,7 +220,7 @@ public class Game {
         }
 
         this.currentPlayer.incrementCodesAttempted();
-        this.allPlayers.saveNewPlayers();
+        this.allPlayers.saveUpdatedPlayers();
         System.out.println("GAME FINISHED");
     }
 
