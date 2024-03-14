@@ -63,34 +63,58 @@ public class Player {
         this.numberOfGuesses++;
     }
 
+    /*
+    Increases the number of total code attempts made by 1.
+     */
     void incrementCodesAttempted(){
         this.codesAttempted++;
     }
 
+    /*
+    Increases the number of total code deciphered made by 1.
+     */
     void incrementCodesDeciphered(){
         this.codesDeciphered++;
     }
 
+    /*
+    returns players username.
+     */
     String getUsername() {
         return this.username;
     }
 
+    /*
+    Returns number of bulls for specific player.
+     */
     int getBulls(){
         return this.numberOfBulls;
     }
 
+    /*
+    Returns number of cows for specific player.
+     */
     int getCows(){
         return this.numberOfCows;
     }
 
+    /*
+    Returns number of guesses made by specific player.
+     */
     int getGuesses() {
         return this.numberOfGuesses;
     }
 
+    /*
+    Returns number of codes attempted for specific player.
+     */
     int getCodesAttempted(){
         return this.codesAttempted;
     }
 
+    /*
+    Returns number of codes deciphered for specific player.
+     */
     int getCodesDeciphered(){
         return this.codesDeciphered;
     }
