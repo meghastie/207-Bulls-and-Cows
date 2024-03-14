@@ -286,6 +286,9 @@ public class Game {
         return completed;
     }
 
+    /*
+    Requests the user to select one of the two game-types
+    */
     public void gameSelection(){
         boolean check = true;
         while(check){
@@ -326,6 +329,8 @@ public class Game {
 
     /*
     Helper function for confirming the user wishes to give up
+
+    @return If the user wants to give up
      */
     private boolean giveUpConfirmation() {
         while (true) {
@@ -344,7 +349,9 @@ public class Game {
     }
 
     /*
-    Helper function for confirming the user wishes to give up
+    Helper function for confirming the user wishes to undo guess
+
+    @return If user wants to undo guess
      */
     private boolean undoConfirmation() {
         while (true) {
@@ -492,6 +499,11 @@ public class Game {
         return false;
     }
 
+    /*
+    Attempts to load a stored game
+
+    @returns If the load was successful
+    */
     private boolean confirmLoadGame(ArrayList<String> lines) {
         StringBuilder loadOptions = getLoadOptions(lines);
 
@@ -526,6 +538,9 @@ public class Game {
         }
     }
 
+    /*
+
+    */
     private StringBuilder getLoadOptions(ArrayList<String> lines) {
         StringBuilder loadOptions = new StringBuilder();
 

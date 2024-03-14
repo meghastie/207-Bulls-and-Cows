@@ -60,6 +60,9 @@ public class Players {
     /*
     Formats a players data to be written to file
     should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
+
+    @return     Formatted string of player details
+    @param p    Player object to be formatted into a string
      */
     private String formatPlayer(Player p) {
         return p.getUsername() + "," + p.getBulls() + "," + p.getCows() + "," + p.getGuesses() + "," + p.getCodesAttempted() + "," + p.getCodesDeciphered() + "\n";
