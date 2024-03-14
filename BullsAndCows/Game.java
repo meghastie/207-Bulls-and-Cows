@@ -478,6 +478,13 @@ public class Game {
         allPlayers.addPlayer(currentPlayer);
     }
 
+    /*
+    Logs player out by setting the user to null
+     */
+    private void logOut(){
+        currentPlayer = null;
+    }
+
     //</editor-fold>
 
     /*
