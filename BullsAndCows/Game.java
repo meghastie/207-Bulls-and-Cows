@@ -375,10 +375,50 @@ public class Game {
         }
     }
 
-    //<editor-fold desc="Account Actions">
     public char[] getGuess() {
         return Guess;
     }
+
+    /*
+    Upon Signing in, prompts the user to select what they'd like to do
+
+    @return The option chosen
+    */
+    private int menuOptions() {
+        for (; ; ) {
+            System.out.println("\nWhat would you like to do?");
+            System.out.println("1. Play Game");
+            System.out.println("2. View Stats");
+            System.out.println("3. View Leaderboard");
+            System.out.println("4. Log out");
+            System.out.println("5. Quit Game");
+            System.out.println("\n>");
+
+            String userInput = inputScanner.nextLine();
+
+            switch(userInput){
+                case "1":
+                    return 1;
+
+                case "2":
+                    return 2;
+
+                case "3":
+                    return 3;
+
+                case "4":
+                    return 4;
+
+                case "5":
+                    return 5;
+
+                default:
+                    System.out.println("\nInvalid Input!");
+            }
+        }
+    }
+
+    //<editor-fold desc="Account Actions">
 
     /*
     Gives the user the option to log-in.
@@ -514,7 +554,7 @@ public class Game {
     }
 
     /*
-    I'll leave this empty for you to fill Noah. Or anyone else who wants to.
+
     */
     void guessingCode(){
 
