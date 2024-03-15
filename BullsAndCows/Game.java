@@ -348,6 +348,7 @@ public class Game {
 
                 case GAME:
                     guessOptions();
+                    resetGuess();
                     stage = STAGE.MENU;
                     break;
 
@@ -401,7 +402,7 @@ public class Game {
                 System.out.println("3. Load saved code");
             }
 
-            System.out.println("\n>");
+            System.out.print("\n>");
 
             String userInput = inputScanner.nextLine();
 
@@ -412,13 +413,15 @@ public class Game {
                 case "1":
                     codeGame = new NumbersCode();
                     System.out.println("\nNew number based code game created!");
-                    currentPlayer.incrementCodesAttempted();
+                    if (currentPlayer != null)
+                        currentPlayer.incrementCodesAttempted();
                     return true;
 
                 case "2":
                     codeGame = new LettersCode();
                     System.out.println("\nNew number based code game created!");
-                    currentPlayer.incrementCodesAttempted();
+                    if (currentPlayer != null)
+                        currentPlayer.incrementCodesAttempted();
                     return true;
 
                 case "3":
@@ -488,7 +491,7 @@ public class Game {
                 System.out.println("4. Log out");
             }
             System.out.println("5. Quit Game");
-            System.out.println("\n>");
+            System.out.print("\n>");
 
             String userInput = inputScanner.nextLine();
 
@@ -522,7 +525,7 @@ public class Game {
     private void guessOptions() {
         for (; ; ) {
             System.out.println("\nFor a list of valid commands, type \"/help\"");
-            System.out.println("\n>");
+            System.out.print("\n>");
 
             String userInput = inputScanner.nextLine();
 
@@ -629,7 +632,7 @@ public class Game {
             System.out.println("1. Log in");
             System.out.println("2. Create account");
             System.out.println("3. Continue as guest");
-            System.out.println("\n>");
+            System.out.print("\n>");
 
             String option = inputScanner.nextLine();
 
@@ -667,7 +670,7 @@ public class Game {
     private boolean logIn(){
         for(;;){
             System.out.println("\nEnter your username or type \"back\" to return:");
-            System.out.println("\n>");
+            System.out.print("\n>");
             String userInput = inputScanner.nextLine();
 
             if(userInput.equals("back")){
@@ -692,7 +695,7 @@ public class Game {
     private boolean createAccount(){
         for(;;) {
             System.out.println("\nPlease enter the username you would like, or \"back\" to return:");
-            System.out.println("\n>");
+            System.out.print("\n>");
             String newUsername = inputScanner.nextLine();
 
             if(newUsername.equals("back")){
@@ -1154,6 +1157,11 @@ public class Game {
     Prints the current player's details and waits for the user to hit enter before returning to the menu
     */
     private void displayStats(){
+        if(currentPlayer == null){
+            System.out.println("\nLogin to view statistics");
+            return;
+        }
+
         print_player_details(currentPlayer);
         try {
             System.in.read();
