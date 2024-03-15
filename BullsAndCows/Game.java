@@ -312,7 +312,7 @@ public class Game {
 
 
     /*
-
+    A stage-by-stage game play loop. Uses an enum to keep track of the stage
     */
     public void playGame2(){
         STAGE stage = STAGE.LOGIN;
@@ -330,7 +330,31 @@ public class Game {
                     break;
 
                 case STATS:
+                    displayStats();
+                    stage = STAGE.MENU;
+                    break;
 
+                case LEADERBOARD:
+                    displayLeaderBoard();
+                    stage = STAGE.MENU;
+                    break;
+
+                case GAMESELECT:
+                    if(newGame())
+                        stage = STAGE.GAME;
+                    else
+                        stage = STAGE.MENU;
+                    break;
+
+                case GAME:
+                    guessOptions();
+                    stage = STAGE.MENU;
+                    break;
+
+                case EXIT:
+                    // exit functions
+                    System.exit(0);
+                    break;
             }
         }
     }
