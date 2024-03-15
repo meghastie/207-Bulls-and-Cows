@@ -354,11 +354,13 @@ public class Game {
                 case "1":
                     codeGame = new NumbersCode();
                     System.out.println("\nNew number based code game created!");
+                    currentPlayer.incrementCodesAttempted();
                     return true;
 
                 case "2":
                     codeGame = new LettersCode();
                     System.out.println("\nNew number based code game created!");
+                    currentPlayer.incrementCodesAttempted();
                     return true;
 
                 case "3":
@@ -417,6 +419,110 @@ public class Game {
             }
         }
     }
+
+    //<editor-fold desc="Guess Options">
+
+    /*
+    Gets the input when guessing a code, and calls appropriate actions based on input
+    */
+    private void guessOptions() {
+        for (; ; ) {
+            System.out.println("\nFor a list of valid commands, type \"/help\"");
+            System.out.println("\n>");
+
+            String userInput = inputScanner.nextLine();
+
+            switch (userInput) {
+                case "/submit":
+                    if (submit()) {
+                        return;
+                    }
+                    break;
+
+                case "/help":
+                    printInstructions();
+                    break;
+
+                case "/giveup":
+                    if (giveUp()){
+                        return;
+                    }
+                    break;
+
+                case "/save":
+                    if(save()){
+                        return;
+                    }
+                    break;
+
+                default:
+                    changeGuess(userInput);
+            }
+        }
+    }
+
+    /*
+    Attempts to change one of the guess positions
+
+    @param userInput    The User's input string
+     */
+    private void changeGuess(String userInput){
+        ArrayList<String> completedChanges = inputGuessChange(userInput);
+        if (completedChanges.isEmpty()) {
+            System.out.println("\nNo changes completed, maybe input had incorrect format?");
+        } else {
+            System.out.println("\nChanges completed: " + completedChanges);
+        }
+    }
+
+    /*
+    Checks if a user is logged in before trying to save the current code game
+
+    @return If the save was successful or not
+     */
+    private boolean save(){
+        if(currentPlayer == null){
+            System.out.println("\nTo save a game, you must first create an account, or login to an existing one");
+            return false;
+        }
+        else if(saveGame()){
+            System.out.println("\nGame saved for later!");
+            return true;
+        }
+        else{
+            System.out.println("\nSomething went wrong saving your game!");
+            return false;
+        }
+    }
+
+    /*
+    A short method that checks if the user actually wants to give up, and prints a message if so
+
+    @return If the user wants to give up
+     */
+    private boolean giveUp(){
+        if(giveUpConfirmation()){
+            System.out.println("\nOh well. Better luck next time!");
+            return true;
+        }
+        return false;
+    }
+
+    /*
+    Just a short method that checks if a guess was correct, then preforms appropriate actions.
+
+    @return If the guess was correct
+     */
+    private boolean submit(){
+        if (submitGuess()) {
+            System.out.println("\nCongratulations! Your code was correct!");
+            currentPlayer.incrementCodesDeciphered();
+            return true;
+        }
+        return false;
+    }
+
+    //</editor-fold>
 
     //<editor-fold desc="Account Actions">
 
@@ -553,12 +659,6 @@ public class Game {
         }
     }
 
-    /*
-
-    */
-    void guessingCode(){
-
-    }
 
     /*
    Requests the user to select one of the two game-types
