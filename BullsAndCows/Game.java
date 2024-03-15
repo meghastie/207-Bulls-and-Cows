@@ -15,6 +15,16 @@ public class Game {
 
     //<editor-fold desc="Fields">
 
+    private enum STAGE{
+        LOGIN,
+        MENU,
+        STATS,
+        LEADERBOARD,
+        GAME,
+        GAMESELECT,
+        EXIT
+    }
+
     private Player currentPlayer;
     private Players allPlayers;
     private char[] Guess, preChangeGuess;
@@ -302,6 +312,30 @@ public class Game {
 
 
     /*
+
+    */
+    public void playGame2(){
+        STAGE stage = STAGE.LOGIN;
+        System.out.println("\n\nWelcome to Bulls and Cows!");
+
+        for(;;){
+            switch(stage){
+                case LOGIN:
+                    requestLogin();
+                    stage = STAGE.MENU;
+                    break;
+
+                case MENU:
+                    stage = menu();
+                    break;
+
+                case STATS:
+
+            }
+        }
+    }
+
+    /*
     Prints the instructions
      */
     private void printInstructions(){
@@ -382,6 +416,37 @@ public class Game {
     }
 
     /*
+    Gets the menu option selected and converts it into the corresponding stage in the gameplay loop
+
+    @return The stage corresponding to the chosen option
+     */
+    private STAGE menu(){
+        int option = menuOptions();
+        switch(option){
+            case 1:
+                return STAGE.GAMESELECT;
+
+            case 2:
+                return STAGE.STATS;
+
+            case 3:
+                return STAGE.LEADERBOARD;
+
+            case 4:
+                currentPlayer = null;
+                return STAGE.LOGIN;
+
+            case 5:
+                return STAGE.EXIT;
+
+            default:
+                System.out.println("\nSomething went wrong!");
+                System.out.println("Exiting Game!");
+                return STAGE.EXIT;
+        }
+    }
+
+    /*
     Upon Signing in, prompts the user to select what they'd like to do
 
     @return The option chosen
@@ -392,7 +457,12 @@ public class Game {
             System.out.println("1. Play Game");
             System.out.println("2. View Stats");
             System.out.println("3. View Leaderboard");
-            System.out.println("4. Log out");
+            if(currentPlayer == null){
+                System.out.println("4. Log in");
+            }
+            else {
+                System.out.println("4. Log out");
+            }
             System.out.println("5. Quit Game");
             System.out.println("\n>");
 
@@ -530,10 +600,7 @@ public class Game {
     Gives the user the option to log-in.
     */
     private void requestLogin() {
-        boolean loggedIn = false;
-
-        while (loggedIn == false) {
-
+        for (;;) {
             System.out.println("\nPlease choose one of the following:");
             System.out.println("1. Log in");
             System.out.println("2. Create account");
@@ -545,16 +612,21 @@ public class Game {
 
             switch (option) {
                 case "1":
-                    // Log In
+                    if (logIn()) {
+                        System.out.println("\nWelcome " + currentPlayer.getUsername() + "!");
+                        return;
+                    }
                     break;
 
                 case "2":
-                    // Sign Up
+                    if (createAccount()) {
+                        System.out.println("\nWelcome " + currentPlayer.getUsername() + "!");
+                        return;
+                    }
                     break;
 
                 case "3":
-                    loggedIn = true;
-                    break;
+                    return;
 
                 default:
                     System.out.println("Invalid option!");
@@ -1053,6 +1125,34 @@ public class Game {
 
 
     //<editor-fold desc="Display Statistics">
+
+    /*
+    Prints the current player's details and waits for the user to hit enter before returning to the menu
+    */
+    private void displayStats(){
+        print_player_details(currentPlayer);
+        try {
+            System.in.read();
+        }
+        catch (IOException e){
+            System.out.println("\nProgram has encountered a problem!");
+            System.out.println("Returning to menu...");
+        }
+    }
+
+    /*
+    Prints the leaderboard (the top 10 players) and waits for the user to hit enter before returning to the menu
+     */
+    private void displayLeaderBoard(){
+        print_top_ten();
+        try {
+            System.in.read();
+        }
+        catch (IOException e){
+            System.out.println("\nProgram has encountered a problem!");
+            System.out.println("Returning to menu...");
+        }
+    }
 
     /*
     Prints all of a user's details
