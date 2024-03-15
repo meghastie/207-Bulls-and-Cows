@@ -22,7 +22,8 @@ public class Game {
         LEADERBOARD,
         GAME,
         GAMESELECT,
-        EXIT
+        EXIT,
+        HOWTOPLAY
     }
 
     private Player currentPlayer;
@@ -310,6 +311,7 @@ public class Game {
         System.out.println("\n\nGame Over :)");
     }
 
+    //<editor-fold desc="Play Game 2 Methods"
 
     /*
     A stage-by-stage game play loop. Uses an enum to keep track of the stage
@@ -385,6 +387,68 @@ public class Game {
                 \t/quit -\tQuit current game without saving or completing guess.""";
 
         System.out.println(instructions);
+    }
+
+    /*
+    Displays the list of commands required to play the game and how to change a guess
+     */
+    private void printCommands(){
+        final String commands = """
+                
+                HOW TO ALTER GUESS:
+                
+                You begin with an empty guess
+                To set one of the characters in your guess, type the letter / number you wish to guess,
+                followed by the position to put that guess, between 1 and 4 (e.g. a4).
+                To change more than one position at a time, simply enter a comma followed by your next guess (e.g. a4,g1,h3). Note there are no spaces
+                
+                
+                COMMANDS:
+                
+                    /help   - Prints the list of valid commands (this prompt)
+                    /save   - The current code is saved and can be reattempted later
+                    /undo   - Reverts one of the guess positions back to its previous state
+                    /submit - Submits the guess for comparison
+                    /giveup - Forfeit game and return to menu
+                
+                """;
+        System.out.println(commands);
+
+        try{
+            System.in.read();
+        }
+        catch(IOException e){
+        }
+    }
+
+    /*
+    Prints a description of how the game is played
+     */
+    private void PrintHowToPlay(){
+        final String instructions = """
+
+                HOW TO PLAY
+
+                You are tasked with deciphering a secret code, consisting of either 4 different numbers or letters.
+                Each guess you make, you will be shown how many 'Bulls' and 'Cows' you managed to achieve.
+                A Cow represents a correct character, but is in the wrong position
+                A Bull represents a correct character, at the correct location
+                
+                You win when you achieve 4 bulls: a complete correct guess!
+            
+                
+                COMMANDS
+
+                You begin with an empty guess. To set one of the characters in your guess, type the letter / number you wish to guess, followed by the position to put that guess (between 1 and 4), e.g. a4. To change more than one position at a time, simply enter a comma followed by your next guess, e.g. a4,g1,h3. Note there are no spaces
+                Other commands are as follows:""";
+
+        System.out.println(instructions);
+
+        try{
+            System.in.read();
+        }
+        catch(IOException e){
+        }
     }
 
     /*
@@ -464,6 +528,9 @@ public class Game {
                 return STAGE.LOGIN;
 
             case 5:
+                return STAGE.HOWTOPLAY;
+
+            case 6:
                 return STAGE.EXIT;
 
             default:
@@ -485,12 +552,13 @@ public class Game {
             System.out.println("2. View Stats");
             System.out.println("3. View Leaderboard");
             if(currentPlayer == null){
-                System.out.println("4. Log in");
+                System.out.println("4. Log In");
             }
             else {
-                System.out.println("4. Log out");
+                System.out.println("4. Log Out");
             }
-            System.out.println("5. Quit Game");
+            System.out.println("5. How To Play");
+            System.out.println("6. Quit Game");
             System.out.print("\n>");
 
             String userInput = inputScanner.nextLine();
@@ -511,11 +579,16 @@ public class Game {
                 case "5":
                     return 5;
 
+                case "6":
+                    return 6;
+
                 default:
                     System.out.println("\nInvalid Input!");
             }
         }
     }
+
+    //</editor-fold>
 
     //<editor-fold desc="Guess Options">
 
@@ -551,6 +624,9 @@ public class Game {
                         return;
                     }
                     break;
+
+                case "/undo":
+                    undoConfirmation();
 
                 default:
                     changeGuess(userInput);
