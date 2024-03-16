@@ -21,6 +21,30 @@ public class Players {
     }
 
     //<editor-fold desc="Manage List">
+
+    /*
+    Deletes all Saved coded and the text files storing them from the playerSaves folder
+    and empties the players.txt file.
+    Deletes all saved user information
+     */
+    public void clearSaves(){
+        File playerSaves = new File("./BullsAndCows/PlayerSaves");
+        File[] savesContents = playerSaves.listFiles();
+        if(savesContents != null)
+            for(File file : savesContents)
+                file.delete();
+        try {
+            FileWriter writer = new FileWriter("./BullsAndCows/players.txt", false);
+            writer.write("");
+            writer.close();
+        }
+        catch(IOException e){
+            System.out.println("Couldn't delete contents of player.txt!");
+        }
+
+        allPlayers = new ArrayList<Player>();
+    }
+
     public void addPlayer(Player p){
         this.allPlayers.add(p);
     }

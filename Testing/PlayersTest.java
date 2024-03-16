@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 import BullsAndCows.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -19,27 +20,38 @@ public class PlayersTest {
 
     @BeforeEach
     void populatePlayers(){
-        ArrayList<Player> tempPlayerList = new ArrayList<>();
-        tempPlayerList.add(new Player("User1", 5, 8, 20, 3, 2));
-        tempPlayerList.add(new Player("User2", 9, 5, 17, 3, 3));
-        tempPlayerList.add(new Player("User3", 16, 25, 50, 6, 6));
-        tempPlayerList.add(new Player("User4", 2, 1, 5, 1, 0));
-        tempPlayerList.add(new Player("User5", 98, 156, 300, 30, 30));
-        tempPlayerList.add(new Player("User6", 15, 22, 42, 4, 3));
-        tempPlayerList.add(new Player("User7", 32, 56, 109, 8, 8));
-        tempPlayerList.add(new Player("User8", 0, 0, 0, 0, 0));
-        tempPlayerList.add(new Player("User9", 32, 31, 70, 4, 4));
-        tempPlayerList.add(new Player("User10", 14, 20, 48, 3, 2));
-        tempPlayerList.add(new Player("User11", 8, 8, 20, 2, 2));
-        tempPlayerList.add(new Player("User12", 17, 28, 49, 4, 3));
-        tempPlayerList.add(new Player("User13", 0, 5, 16, 1, 0));
-        tempPlayerList.add(new Player("User14", 38, 40, 98, 4, 4));
-        tempPlayerList.add(new Player("User15", 156, 201, 425, 45, 40));
+        playerList = new Players();
 
-        playerList = new Players(tempPlayerList);
+        playerList.clearSaves();
+
+        playerList.addPlayer(new Player("User1", 5, 8, 20, 3, 2));
+        playerList.addPlayer(new Player("User2", 9, 5, 17, 3, 3));
+        playerList.addPlayer(new Player("User3", 16, 25, 50, 6, 6));
+        playerList.addPlayer(new Player("User4", 2, 1, 5, 1, 0));
+        playerList.addPlayer(new Player("User5", 98, 156, 300, 30, 30));
+        playerList.addPlayer(new Player("User6", 15, 22, 42, 4, 3));
+        playerList.addPlayer(new Player("User7", 32, 56, 109, 8, 8));
+        playerList.addPlayer(new Player("User8", 0, 0, 0, 0, 0));
+        playerList.addPlayer(new Player("User9", 32, 31, 70, 4, 4));
+        playerList.addPlayer(new Player("User10", 14, 20, 48, 3, 2));
+        playerList.addPlayer(new Player("User11", 8, 8, 20, 2, 2));
+        playerList.addPlayer(new Player("User12", 17, 28, 49, 4, 3));
+        playerList.addPlayer(new Player("User13", 0, 5, 16, 1, 0));
+        playerList.addPlayer(new Player("User14", 38, 40, 98, 4, 4));
+        playerList.addPlayer(new Player("User15", 156, 201, 425, 45, 40));
     }
 
     //<editor-fold desc="Method Tests">
+
+    @Test
+    void playerSavesTest(){
+        File saveFile;
+        String location = "./BullsAndCows/PlayerSaves/User";
+        for(int i=1; i<16;i++){
+            saveFile = new File(location+i+".txt");
+            assertTrue(saveFile.exists());
+        }
+    }
 
     @Test
     void findPlayerTest(){
@@ -129,4 +141,8 @@ public class PlayersTest {
     }
     //</editor-fold>
 
+    @AfterEach
+    void resetSaves(){
+        playerList.clearSaves();
+    }
 }
