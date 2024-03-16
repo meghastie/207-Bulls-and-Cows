@@ -72,6 +72,17 @@ public class Game {
 
     //</editor-folds>
 
+    //<editor-fold desc="Test Methods">
+
+    public SecretCode getCodeGame() {
+        return codeGame;
+    }
+
+    public void testGuessOptions(){
+        guessOptions();
+    }
+
+    //</editor-fold>
 
     /*
    Get a hint from the secret code and return
@@ -82,9 +93,7 @@ public class Game {
         return "";
     }
 
-    public SecretCode getCodeGame() {
-        return codeGame;
-    }
+
 
 
 
@@ -356,8 +365,7 @@ public class Game {
 
                 case EXIT:
                     // exit functions
-                    System.exit(0);
-                    break;
+                    return;
             }
         }
     }
@@ -483,7 +491,7 @@ public class Game {
 
                 case "2":
                     codeGame = new LettersCode();
-                    System.out.println("\nNew number based code game created!");
+                    System.out.println("\nNew letter based code game created!");
                     if (currentPlayer != null)
                         currentPlayer.incrementCodesAttempted();
                     return true;
@@ -689,7 +697,8 @@ public class Game {
     private boolean submit(){
         if (submitGuess()) {
             System.out.println("\nCongratulations! Your code was correct!");
-            currentPlayer.incrementCodesDeciphered();
+            if (currentPlayer != null)
+                currentPlayer.incrementCodesDeciphered();
             return true;
         }
         return false;
