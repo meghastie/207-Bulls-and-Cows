@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameTest{
     Game game;
 
+    //<editor-fold desc="Sprint 1 Tests">
     @Test
     void requestCodeLetterWithoutFile(){
         try {
@@ -257,6 +258,12 @@ class GameTest{
         String stimulus = "3\n1\n1\n/undo\n42\n\n/giveup\ny";
         genericTestingBody(stimulus);
     }
+
+    //</editor-fold>
+    //</editor-fold>
+
+    //<editor-fold desc="Sprint 2 Tests">
+
 
     //</editor-fold>
 }

@@ -29,7 +29,7 @@ public class Players {
     Load all players from a file, and store in instance of players class
     players.txt should be in form  <playerName>,<bulls>,<cows>,<guesses>,<attempts>,<completed>\n
      */
-    void loadAllPlayers() {
+    private void loadAllPlayers() {
         final String playersFilePath = "./BullsAndCows/players.txt";
         String line;
         String[] parsedLine;
@@ -80,7 +80,7 @@ public class Players {
     public void saveUpdatedPlayers() {
         try {
             String playerFilePath = "./BullsAndCows/players.txt";
-            FileWriter writer = new FileWriter(playerFilePath);
+            FileWriter writer = new FileWriter(playerFilePath, false);
 
             for (Player p : this.allPlayers) {
                 writer.write(formatPlayer(p));

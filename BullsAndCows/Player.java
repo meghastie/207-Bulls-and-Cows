@@ -1,6 +1,7 @@
 package BullsAndCows;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Player {
 
@@ -20,6 +21,8 @@ public class Player {
 
     public Player(String name){
         this.username = name;
+
+        this.createSavesLocation();
     }
 
     public Player(String name, int bulls, int cows, int guesses, int attempted, int deciphered){
@@ -40,9 +43,16 @@ public class Player {
      */
     private void createSavesLocation() {
         final String playerSavePath = "./BullsAndCows/playerSaves/";
-        new File(playerSavePath + this.username + ".txt");
+        File saveFile = new File(playerSavePath + this.username + ".txt");
+        try {
+            saveFile.createNewFile();
+        }
+        catch(IOException e){
+            System.out.println("Code storage file couldn't be created!");
+            System.out.println("Exiting Program...");
+            System.exit(1);
+        }
     }
-
     //<editor-fold desc = "Setters">
 
     /*

@@ -43,7 +43,6 @@ public class Game {
         this.currentPlayer = p;
         this.codeGame = setCode;
         allPlayers = new Players();
-        allPlayers.loadAllPlayers();
         resetGuess();
         inputScanner = new Scanner(System.in);
     }
@@ -58,14 +57,12 @@ public class Game {
     public Game(Player p){
         this.currentPlayer = p;
         allPlayers = new Players();
-        allPlayers.loadAllPlayers();
         resetGuess();
         inputScanner = new Scanner(System.in);
     }
 
     public Game(){
         allPlayers = new Players();
-        allPlayers.loadAllPlayers();
         resetGuess();
         inputScanner = new Scanner(System.in);
     }
@@ -89,9 +86,10 @@ public class Game {
 
    @return a hint to help the user guess the code
    */
-    String getHint(){
+    String getHint() {
         return "";
     }
+
 
 
 
@@ -332,8 +330,7 @@ public class Game {
         for(;;){
             switch(stage){
                 case LOGIN:
-                    requestLogin();
-                    stage = STAGE.MENU;
+                    stage = requestLogin();
                     break;
 
                 case MENU:
@@ -365,6 +362,7 @@ public class Game {
 
                 case EXIT:
                     // exit functions
+                    allPlayers.saveUpdatedPlayers();
                     return;
             }
         }
@@ -684,6 +682,7 @@ public class Game {
     private boolean giveUp(){
         if(giveUpConfirmation()){
             System.out.println("\nOh well. Better luck next time!");
+            System.out.println("The code was: " + Arrays.toString(codeGame.getCode()));
             return true;
         }
         return false;
@@ -710,13 +709,16 @@ public class Game {
 
     /*
     Gives the user the option to log-in.
+
+    @return The next stage in the program (either exit or menu)
     */
-    private void requestLogin() {
+    private STAGE requestLogin() {
         for (;;) {
             System.out.println("\nPlease choose one of the following:");
             System.out.println("1. Log in");
             System.out.println("2. Create account");
             System.out.println("3. Continue as guest");
+            System.out.println("4. Quit");
             System.out.print("\n>");
 
             String option = inputScanner.nextLine();
@@ -726,19 +728,22 @@ public class Game {
                 case "1":
                     if (logIn()) {
                         System.out.println("\nWelcome " + currentPlayer.getUsername() + "!");
-                        return;
+                        return STAGE.MENU;
                     }
                     break;
 
                 case "2":
                     if (createAccount()) {
                         System.out.println("\nWelcome " + currentPlayer.getUsername() + "!");
-                        return;
+                        return STAGE.MENU;
                     }
                     break;
 
                 case "3":
-                    return;
+                    return STAGE.MENU;
+
+                case "4":
+                    return STAGE.EXIT;
 
                 default:
                     System.out.println("Invalid option!");
