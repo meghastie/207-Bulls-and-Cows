@@ -139,7 +139,7 @@ public class Game {
 
                     case "/giveup":
                         if (giveUpConfirmation()) {
-                            System.out.println("\nSolution: " + showSolution(codeGame));
+                            System.out.println("\nSolution: " + showSolution());
                             givenUp = true;
                             finishInputGuess = true;
                         }
@@ -245,7 +245,7 @@ public class Game {
 
                         case "/giveup":
                             if (giveUpConfirmation()) {
-                                System.out.println("\nSolution: " + showSolution(codeGame));
+                                System.out.println("\nSolution: " + showSolution());
                                 givenUp = true;
                                 finishInputGuess = true;
                             }
@@ -616,7 +616,7 @@ public class Game {
                     break;
 
                 case "/help":
-                    printInstructions();
+                    printCommands();
                     break;
 
                 case "/giveup":
@@ -682,7 +682,7 @@ public class Game {
     private boolean giveUp(){
         if(giveUpConfirmation()){
             System.out.println("\nOh well. Better luck next time!");
-            System.out.println("The code was: " + Arrays.toString(codeGame.getCode()));
+            System.out.println("The code was: " + showSolution());
             return true;
         }
         return false;
@@ -1105,7 +1105,7 @@ public class Game {
         try {
             FileOutputStream fileOut = new FileOutputStream(playerSavePath, true);
             fileOut.write(LocalDateTime.now().format(CUSTOM_FORMATTER).getBytes());
-            fileOut.write(this.showSolution(this.codeGame).getBytes());
+            fileOut.write((showSolution() + "\n").getBytes());
             fileOut.close();
 
             return true;
@@ -1227,17 +1227,10 @@ public class Game {
     /*
     Gets solution from secret code class and returns
 
-    @param secretCode instance
     @return solution as String
     */
-    private String showSolution(SecretCode secretCode){
-        StringBuilder solution = new StringBuilder();
-
-        for (char c : secretCode.getCode()) {
-            solution.append(String.valueOf(c));
-        }
-
-        return solution.toString();
+    private String showSolution(){
+       return Arrays.toString(codeGame.getCode());
     }
 
 
