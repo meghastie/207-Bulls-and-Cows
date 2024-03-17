@@ -4,10 +4,12 @@ import org.junit.jupiter.api.*;
 import BullsAndCows.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -282,22 +284,19 @@ class GameTest{
 
     @Test
     void newAccountTest(){
-        String stimulus = "2\nBarry\n6\n";
+        String stimulus = "2\nBarry\n6";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
         game.playGame2();
 
-        assertNotNull(game.getPlayerList().findPlayer("Barry"));
-
-        game = new Game();
-        Player player = game.getPlayerList().findPlayer("Barry");
-        checkDetails(player, "Barry", 0, 0, 0, 0, 0);
-
-        stimulus = "1\nBarry\n6\n";
-        testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
-        System.setIn(testInput);
-
-        assertDoesNotThrow(() -> game.playGame2());
+        File saveFile = new File("./BullsAndCows/players.txt");
+        try {
+            Scanner fileRead = new Scanner(saveFile);
+            assertEquals("Barry,0,0,0,0,0", fileRead.nextLine());
+        }
+        catch(FileNotFoundException e){
+            fail();
+        }
     }
 
     //</editor-fold>

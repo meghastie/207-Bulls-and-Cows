@@ -306,6 +306,11 @@ public class Game {
                     stage = STAGE.MENU;
                     break;
 
+                case HOWTOPLAY:
+                    PrintHowToPlay();
+                    stage = STAGE.MENU;
+                    break;
+
                 case EXIT:
                     // exit functions
                     allPlayers.saveUpdatedPlayers();
