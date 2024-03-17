@@ -315,7 +315,6 @@ public class Game {
                 case EXIT:
                     // exit functions
                     allPlayers.saveUpdatedPlayers();
-                    currentPlayer = null;
                     return;
             }
         }
@@ -1137,7 +1136,7 @@ public class Game {
                     System.out.println("\nLoading game from " + splitCodes.get(i)[0]);
                     char[] code = convertToCode(splitCodes.get(i)[2]);
 
-                    if (isNumeric(splitCodes.get(i)[2])) {
+                    if (isNumeric(code)) {
                         this.codeGame = new NumbersCode(code);
                         System.out.println("\nNumber code loaded");
                     } else {
@@ -1198,7 +1197,7 @@ public class Game {
         for (int i = 0; i < lines.size(); i += 2) {
             loadCount += 1;
 
-            if (isNumeric(lines.get(i)[2])) {
+            if (isNumeric(convertToCode(lines.get(i)[2]))) {
                 codeType = "Number Code";
             } else {
                 codeType = "Letter Code";
@@ -1211,13 +1210,8 @@ public class Game {
         return loadOptions;
     }
 
-    private boolean isNumeric(String str) {
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch(NumberFormatException e){
-            return false;
-        }
+    private boolean isNumeric(char[] str) {
+        return str[0] > '0' && str[0] < '9';
     }
 
     //</editor-fold>

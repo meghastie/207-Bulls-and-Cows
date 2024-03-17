@@ -307,6 +307,67 @@ class GameTest{
     }
 
     @Test
+    void saveGameTest(){
+        String stimulus = "2\nBarry\n1\n1\n/save\n6";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+
+        game = new Game();
+        game.playGame2();
+
+        String code = Arrays.toString(game.getCodeGame().getCode());
+
+        File saveFile = new File("./BullsAndCows/playerSaves/Barry.txt");
+        try {
+            Scanner fileRead = new Scanner(saveFile);
+            String codeDetails = fileRead.nextLine();
+            assertEquals(code, codeDetails.split(";")[2]);
+        }
+        catch(FileNotFoundException e){
+            fail();
+        }
+    }
+
+    @Test
+    void loadExistingGame(){
+        String stimulus = "/save";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+
+        Player Barry = new Player("Barry",0,0,0,0,0);
+
+        game = new Game(Barry, new NumbersCode(new char[]{'1','1','1','1'}));
+        game.testGuessOptions();
+        game.getPlayerList().saveUpdatedPlayers();
+
+        stimulus = "1\nBarry\n1\n3\n1\n/giveup\ny\n6";
+        testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+
+        game = new Game();
+        game.playGame2();
+
+        assertArrayEquals(new char[]{'1','1','1','1'}, game.getCodeGame().getCode());
+    }
+
+    @Test
+    void loadNonexistingGame(){
+        Player Barry = new Player("Barry",0,0,0,0,0);
+        Players playerList = new Players();
+        playerList.addPlayer(Barry);
+        playerList.saveUpdatedPlayers();
+
+        String stimulus = "1\nBarry\n1\n3\nback\n6";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+
+        game = new Game();
+        game.playGame2();
+
+        assertNull(game.getCodeGame());
+    }
+
+    @Test
     void trackDecipheredTest(){
         String stimulus = "91,82,73,64\n/submit\n";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
