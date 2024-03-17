@@ -272,14 +272,15 @@ class GameTest{
 
     //<editor-fold desc="Sprint 2 Tests">
 
-    void checkDetails(Player player, String name, int bulls, int cows, int guesses, int attempts, int deciphered){
-        assertNotNull(player);
-        assertEquals(name, player.getUsername());
-        assertEquals(bulls, player.getBulls());
-        assertEquals(cows, player.getCows());
-        assertEquals(guesses, player.getGuesses());
-        assertEquals(attempts, player.getCodesAttempted());
-        assertEquals(deciphered, player.getCodesDeciphered());
+    void checkInFile(String details){
+        File saveFile = new File("./BullsAndCows/players.txt");
+        try {
+            Scanner fileRead = new Scanner(saveFile);
+            assertEquals(details, fileRead.nextLine());
+        }
+        catch(FileNotFoundException e){
+            fail();
+        }
     }
 
     @Test
@@ -293,6 +294,7 @@ class GameTest{
         try {
             Scanner fileRead = new Scanner(saveFile);
             assertEquals("Barry,0,0,0,0,0", fileRead.nextLine());
+            fileRead.close();
         }
         catch(FileNotFoundException e){
             fail();
@@ -318,14 +320,33 @@ class GameTest{
             System.setIn(old);
         }
 
-        File saveFile = new File("./BullsAndCows/players.txt");
-        try {
-            Scanner fileRead = new Scanner(saveFile);
-            assertEquals("Barry,4,0,4,1,1", fileRead.nextLine());
-        }
-        catch(FileNotFoundException e){
-            fail();
-        }
+        checkInFile("Barry,4,0,4,1,1");
+    }
+
+
+    @Test
+    void trackAttemptedTest(){
+        Players playerList = new Players();
+        playerList.addPlayer(new Player("Barry",0,0,0,0,0));
+        playerList.saveUpdatedPlayers();
+
+        String stimulus = "1\nBarry\n1\n1\n/save\n6";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+
+        game = new Game();
+        game.playGame2();
+
+        checkInFile("Barry,0,0,0,1,0");
+
+
+//        stimulus = "1\nBarry\n1\n3\n1\n/giveup\ny\n6";
+//        testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+//        System.setIn(testInput);
+//        game = new Game();
+//        game.playGame2();
+//
+//        checkInFile("Barry,0,0,0,1,0");
     }
     //</editor-fold>
 }
