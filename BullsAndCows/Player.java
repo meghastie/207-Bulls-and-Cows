@@ -44,6 +44,7 @@ public class Player {
     private void createSavesLocation() {
         final String playerSavePath = "./BullsAndCows/playerSaves/";
         File saveFile = new File(playerSavePath + this.username + ".txt");
+
         try {
             saveFile.createNewFile();
         }

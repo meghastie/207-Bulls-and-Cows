@@ -87,11 +87,6 @@ public class Game {
         return "";
     }
 
-
-
-
-
-
     /*
     Main game loop for one "round" each time function is called
     @param is the game type a number game? (True -> number game, False -> letter game)
@@ -103,8 +98,9 @@ public class Game {
         System.out.println("\n\nWelcome to Bulls and Cows. Please alter and submit your guess, or type /help for instructions of how to play. To start, enter 'game'");
 
         // local variables
-        boolean gameOver, finishInputGuess, givenUp;
+        boolean gameOver = false, finishInputGuess, givenUp;
         String userInput;
+
         /*
         Switch statement inputted twice: allows user to log in/help/ any other commands before they start the game. if the user wants to just play the game straight away, they just input 'game'
          */
@@ -126,61 +122,13 @@ public class Game {
                         printInstructions();
                         break;
 
-                    case "/guess":
-                        finishInputGuess = true;
-                        break;
-
-                    case "/hint":
-                        System.out.println(getHint());
-                        break;
-
-                    case "/giveup":
-                        if (giveUpConfirmation()) {
-                            System.out.println("\nSolution: " + showSolution());
-                            givenUp = true;
-                            finishInputGuess = true;
-                        }
-                        break;
-
-                    case "/undo":
-                        if (undoConfirmation()) {
-                            System.out.println("\nUndo Confirmed.");
-                        } else {
-                            System.out.println("\nUndo Cancelled.");
-                        }
-                        break;
-
-                    case "/save":
-                        if (this.currentPlayer != null) {
-                            if (this.saveGame()) {
-                                givenUp = true;
-                                finishInputGuess = true;
-                            }
-                        } else {
-                            System.out.println("\nNo user logged in. You must be logged in to save and load games. Try /login.");
-                        }
-
-                        break;
-
-                    case "/load":
-                        if (this.currentPlayer != null) {
-                            if (this.loadGame()) {
-                                this.currentPlayer.incrementCodesAttempted();
-                            }
-                        } else {
-                            System.out.println("\nNo user logged in. You must be logged in to save and load games. Try /login.");
-                        }
-
-                        break;
-
                     case "/stats":
                         print_player_details(this.currentPlayer);
                         break;
 
                     case "/quit":
                         System.out.println("\nQuitting current game.");
-                        givenUp = true;
-                        finishInputGuess = true;
+                        gameOver = true;
                         break;
 
                     case "game":
@@ -188,14 +136,12 @@ public class Game {
                         break;
 
                     default:                                // case when input is not recognised
-                        System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
+                        System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again, or type 'game' to begin the game.");
                         break;
 
                 }
             }
         } while (!userInput.equalsIgnoreCase("game"));
-
-        gameOver = false;
 
         while (!gameOver) {                                     // begin game loop
             finishInputGuess = false;
@@ -205,10 +151,9 @@ public class Game {
                 //inputScanner = new Scanner(System.in);
                 System.out.println("\n\nCurrent Guess: " + showGuess() + "\n>>> ");
                 userInput = inputScanner.nextLine();            // receive input
-                if(userInput == null || userInput.isEmpty()){
+                if (userInput == null || userInput.isEmpty()) {
                     System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
-                }
-                else if (userInput.charAt(0) != '/') {               // input is not a user command
+                } else if (userInput.charAt(0) != '/') {               // input is not a user command
                     ArrayList<String> completedChanges = inputGuessChange(userInput);
                     if (completedChanges.isEmpty()) {
                         System.out.println("\nNo changes completed, maybe input had incorrect format?");
@@ -376,18 +321,21 @@ public class Game {
                 You are tasked with deciphering a secret code, consisting of either 4 different numbers or letters.
                 Each guess you make, you will be shown how many 'Bulls' and 'Cows' you managed to get, meaning how many numbers / letters you got correct & in the right position, and how many you just got correct, respectively.
                 COMMANDS
+                
+                Before the game begins, you are able to:
+                \t/login -\tLogin or create an account to save your score and statistics, and maybe you can top the leaderboard!
+                \t/stats -\tView current user's game play statistics, such as accuracy over all games.
+                \t/quit -\tQuit game completely.
+                \tgame - \tStart the game.
 
                 You begin with an empty guess. To set one of the characters in your guess, type the letter / number you wish to guess, followed by the position to put that guess (between 1 and 4), e.g. a4. To change more than one position at a time, simply enter a comma followed by your next guess, e.g. a4,g1,h3. Note there are no spaces
-                Other commands are as follows:
-                \t/login -\tLogin or create an account to save your score and statistics, and maybe you can top the leaderboard!
+                Other commands are as follows (as well as commands above):
                 \t/hint -\tIf you are stuck, receive a hint for your guess
                 \t/giveup -\tIf you are really stuck, you can give up and see the solution
                 \t/guess -\tSubmit your completed guess, all positions of your guess must be filled.
                 \t/undo -\t If you want to undo a change you've made to your guess (only one undo can be made to any given position).
                 \t/save -\tSave the secret code you are currently guessing to try again later.
-                \t/load -\tLoad a previous secret code to resume guessing.
-                \t/stats -\tView game play statistics, such as accuracy over all games.
-                \t/quit -\tQuit current game without saving or completing guess.""";
+                \t/load -\tLoad a previous secret code to resume guessing.""";
 
         System.out.println(instructions);
     }
@@ -1121,11 +1069,10 @@ public class Game {
      */
     private boolean loadGame(){
         final String playerSavePath = "./BullsAndCows/playerSaves/" + this.currentPlayer.getUsername() + ".txt";
-        String datetime, savedCode;
         ArrayList<String> readLines = new ArrayList<>();
 
         try {
-            Scanner scanner = new Scanner(new File(playerSavePath));
+            Scanner scanner = new Scanner(new File(playerSavePath));        // this file will always exist when a player is created
             while (scanner.hasNextLine()) {
                 readLines.add(scanner.nextLine());
             }
@@ -1192,10 +1139,11 @@ public class Game {
     */
     private StringBuilder getLoadOptions(ArrayList<String> lines) {
         StringBuilder loadOptions = new StringBuilder();
+        String codeType;
+        int loadCount = 0;
 
         for (int i = 0; i < lines.size(); i += 2) {
-            int loadI = (i / 2) + 1;
-            String codeType;
+            loadCount += 1;
 
             if (isNumeric(lines.get(i+1))) {
                 codeType = "Number Code";
@@ -1203,7 +1151,7 @@ public class Game {
                 codeType = "Letter Code";
             }
 
-            String gameSavedLine = "(" + loadI + ") Game Saved - " + lines.get(i) + " (" + codeType + ")\n";
+            String gameSavedLine = "(" + loadCount + ") Game Saved - " + lines.get(i) + " (" + codeType + ")\n";
             loadOptions.append(gameSavedLine);
         }
 
@@ -1227,7 +1175,7 @@ public class Game {
     @return solution as String
     */
     private String showSolution(){
-       return Arrays.toString(codeGame.getCode());
+        return Arrays.toString(this.codeGame.getCode());
     }
 
 
