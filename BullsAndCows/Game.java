@@ -1058,13 +1058,13 @@ public class Game {
     Saves the current secret code game for user to try again later, then end game
      */
     private boolean saveGame(){
-        final DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+        final DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd;HH:mm:ss");
         final String playerSavePath = "./BullsAndCows/playerSaves/" + this.currentPlayer.getUsername() + ".txt";
 
         try {
             FileOutputStream fileOut = new FileOutputStream(playerSavePath, true);
             fileOut.write(LocalDateTime.now().format(CUSTOM_FORMATTER).getBytes());
-            fileOut.write((showSolution() + "\n").getBytes());
+            fileOut.write((";" + showSolution() + "\n").getBytes());
             fileOut.close();
 
             return true;
@@ -1092,7 +1092,7 @@ public class Game {
             }
             scanner.close();
 
-            if (readLines.size() <= 1) {
+            if (readLines.isEmpty()) {
                 System.out.println("\nNo saved codes for this user!");
                 return false;
             } else {
@@ -1113,7 +1113,10 @@ public class Game {
     @returns If the load was successful
     */
     private boolean confirmLoadGame(ArrayList<String> lines) {
-        StringBuilder loadOptions = getLoadOptions(lines);
+
+        ArrayList<String[]> splitCodes = splitSaveInfo(lines);
+
+        StringBuilder loadOptions = getLoadOptions(splitCodes);
 
         while (true) {
             System.out.println("\nGames saved for user: " + this.currentPlayer.getUsername());
@@ -1129,16 +1132,16 @@ public class Game {
             }
 
             try {
-                if (Integer.parseInt(loadIndex) > 0 && Integer.parseInt(loadIndex) <= (lines.size() / 2)) {
-                    String loadDate = lines.get((Integer.parseInt(loadIndex) * 2) - 2);
-                    String loadCode = lines.get((Integer.parseInt(loadIndex) * 2) - 1);
-                    System.out.println("\nLoading game from " + loadDate);
+                int i = (Integer.parseInt(loadIndex)-1);
+                if (i >= 0 && i <= (splitCodes.size()-1)) {
+                    System.out.println("\nLoading game from " + splitCodes.get(i)[0]);
+                    char[] code = convertToCode(splitCodes.get(i)[2]);
 
-                    if (isNumeric(loadCode)) {
-                        this.codeGame = new NumbersCode(loadCode.toCharArray());
+                    if (isNumeric(splitCodes.get(i)[2])) {
+                        this.codeGame = new NumbersCode(code);
                         System.out.println("\nNumber code loaded");
                     } else {
-                        this.codeGame = new LettersCode(loadCode.toCharArray());
+                        this.codeGame = new LettersCode(code);
                         System.out.println("\nLetter code loaded");
                     }
 
@@ -1154,9 +1157,40 @@ public class Game {
     }
 
     /*
+    Converts the saved string format of the code into the character array
+
+    @returns    The code in the usable format
+
+    @param oldCode  The code string to be converted
+     */
+    private char[] convertToCode(String oldCode){
+        String code = oldCode.replace("[","");
+        code = code.replace("]","");
+        code = code.replace(",","");
+        code = code.replace(" ","");
+        return code.toCharArray();
+    }
+
+    /*
+    Splits the saved code info into parts based on a common dellimiter
+
+    @returns    All parts of all the saved codes
+
+    @param codeList The list of single String code info to be split
+     */
+    private ArrayList<String[]> splitSaveInfo(ArrayList<String> codeList){
+        ArrayList<String[]> splitCodeList = new ArrayList<String[]>();
+        for(String code : codeList){
+            String[] items = code.split(";");
+            splitCodeList.add(items);
+        }
+        return splitCodeList;
+    }
+
+    /*
 
     */
-    private StringBuilder getLoadOptions(ArrayList<String> lines) {
+    private StringBuilder getLoadOptions(ArrayList<String[]> lines) {
         StringBuilder loadOptions = new StringBuilder();
         String codeType;
         int loadCount = 0;
@@ -1164,13 +1198,13 @@ public class Game {
         for (int i = 0; i < lines.size(); i += 2) {
             loadCount += 1;
 
-            if (isNumeric(lines.get(i+1))) {
+            if (isNumeric(lines.get(i)[2])) {
                 codeType = "Number Code";
             } else {
                 codeType = "Letter Code";
             }
 
-            String gameSavedLine = "(" + loadCount + ") Game Saved - " + lines.get(i) + " (" + codeType + ")\n";
+            String gameSavedLine = "(" + loadCount + ") Game Saved - " + lines.get(i)[0] + " | " + lines.get(i)[1] + " (" + codeType + ")\n";
             loadOptions.append(gameSavedLine);
         }
 

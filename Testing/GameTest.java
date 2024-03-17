@@ -340,13 +340,13 @@ class GameTest{
         checkInFile("Barry,0,0,0,1,0");
 
 
-//        stimulus = "1\nBarry\n1\n3\n1\n/giveup\ny\n6";
-//        testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
-//        System.setIn(testInput);
-//        game = new Game();
-//        game.playGame2();
-//
-//        checkInFile("Barry,0,0,0,1,0");
+        stimulus = "1\nBarry\n1\n3\n1\n/giveup\ny\n6";
+        testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+        game = new Game();
+        game.playGame2();
+
+        checkInFile("Barry,0,0,0,1,0");
     }
     //</editor-fold>
 }
