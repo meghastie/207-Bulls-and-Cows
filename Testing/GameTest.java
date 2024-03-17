@@ -14,6 +14,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class GameTest{
     Game game;
 
+    @BeforeEach
+    void setUp(){
+        game = new Game();
+        game.getPlayerList().clearSaves();
+    }
+
     //<editor-fold desc="Sprint 1 Tests">
     @Test
     void requestCodeLetterWithoutFile(){
@@ -264,6 +270,35 @@ class GameTest{
 
     //<editor-fold desc="Sprint 2 Tests">
 
+    void checkDetails(Player player, String name, int bulls, int cows, int guesses, int attempts, int deciphered){
+        assertNotNull(player);
+        assertEquals(name, player.getUsername());
+        assertEquals(bulls, player.getBulls());
+        assertEquals(cows, player.getCows());
+        assertEquals(guesses, player.getGuesses());
+        assertEquals(attempts, player.getCodesAttempted());
+        assertEquals(deciphered, player.getCodesDeciphered());
+    }
+
+    @Test
+    void newAccountTest(){
+        String stimulus = "2\nBarry\n6\n";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+        game.playGame2();
+
+        assertNotNull(game.getPlayerList().findPlayer("Barry"));
+
+        game = new Game();
+        Player player = game.getPlayerList().findPlayer("Barry");
+        checkDetails(player, "Barry", 0, 0, 0, 0, 0);
+
+        stimulus = "1\nBarry\n6\n";
+        testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+
+        assertDoesNotThrow(() -> game.playGame2());
+    }
 
     //</editor-fold>
 }

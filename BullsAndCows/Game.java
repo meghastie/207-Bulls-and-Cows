@@ -76,6 +76,10 @@ public class Game {
         guessOptions();
     }
 
+    public Players getPlayerList(){
+        return allPlayers;
+    }
+
     //</editor-fold>
 
     /*
@@ -305,6 +309,7 @@ public class Game {
                 case EXIT:
                     // exit functions
                     allPlayers.saveUpdatedPlayers();
+                    currentPlayer = null;
                     return;
             }
         }
@@ -717,6 +722,9 @@ public class Game {
                     currentPlayer = logInAttempt;
                     System.out.println("\nLog in successful!");
                     return true;
+                }
+                else{
+                    System.out.println("\nInvalid Username!");
                 }
             }
         }
