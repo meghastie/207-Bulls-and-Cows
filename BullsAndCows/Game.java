@@ -1114,22 +1114,27 @@ public class Game {
                 return false;
             }
 
-            if (Integer.parseInt(loadIndex) > 0 && Integer.parseInt(loadIndex) <= (lines.size()/2)) {
-                String loadDate = lines.get( (Integer.parseInt(loadIndex) * 2) - 2 );
-                String loadCode = lines.get( (Integer.parseInt(loadIndex) * 2) - 1 );
-                System.out.println("\nLoading game from " + loadDate);
+            try {
+                if (Integer.parseInt(loadIndex) > 0 && Integer.parseInt(loadIndex) <= (lines.size() / 2)) {
+                    String loadDate = lines.get((Integer.parseInt(loadIndex) * 2) - 2);
+                    String loadCode = lines.get((Integer.parseInt(loadIndex) * 2) - 1);
+                    System.out.println("\nLoading game from " + loadDate);
 
-                if (isNumeric(loadCode)) {
-                    this.codeGame = new NumbersCode(loadCode.toCharArray());
-                    System.out.println("\nNumber code loaded");
+                    if (isNumeric(loadCode)) {
+                        this.codeGame = new NumbersCode(loadCode.toCharArray());
+                        System.out.println("\nNumber code loaded");
+                    } else {
+                        this.codeGame = new LettersCode(loadCode.toCharArray());
+                        System.out.println("\nLetter code loaded");
+                    }
+
+                    return true;
                 } else {
-                    this.codeGame = new LettersCode(loadCode.toCharArray());
-                    System.out.println("\nLetter code loaded");
+                    System.out.println("\nOption out of range. Please select a valid option.\n");
                 }
-
-                return true;
-            } else {
-                System.out.println("\nOption out of range. Please select a valid option.\n");
+            }
+            catch(NumberFormatException e){
+                System.out.println("\nInput contains non-numeric values!");
             }
         }
     }
