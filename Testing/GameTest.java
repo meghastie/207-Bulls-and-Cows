@@ -22,6 +22,11 @@ class GameTest{
         game.getPlayerList().clearSaves();
     }
 
+    @AfterEach
+    void resetStates(){
+        game.getPlayerList().clearSaves();
+    }
+
     //<editor-fold desc="Sprint 1 Tests">
     @Test
     void requestCodeLetterWithoutFile(){
