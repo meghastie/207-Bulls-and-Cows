@@ -48,6 +48,7 @@ public class Game {
     // old Testing Constructor
     public Game(SecretCode setCode){
         codeGame = setCode;
+        allPlayers = new Players();
         resetGuess();
         inputScanner = new Scanner(System.in);
     }
@@ -235,7 +236,7 @@ public class Game {
 
                         case "/quit":
                             System.out.println("\nQuitting current game.");
-                            givenUp = true;
+                            gameOver = true;
                             finishInputGuess = true;
                             break;
 
@@ -247,7 +248,7 @@ public class Game {
             }
 
             // valid input has been given
-            gameOver = givenUp;
+            //gameOver = givenUp;
 
             if (!gameOver) {
                 if (submitGuess()) {
@@ -259,9 +260,10 @@ public class Game {
                 }
             }
         }
-
-        this.currentPlayer.incrementCodesAttempted();
-        this.allPlayers.saveUpdatedPlayers();
+        if(currentPlayer != null){
+            this.currentPlayer.incrementCodesAttempted();
+            this.allPlayers.saveUpdatedPlayers();
+        }
         System.out.println("\n\nGame Over :)");
     }
 
@@ -675,9 +677,7 @@ public class Game {
             System.out.println("3. Continue as guest");
             System.out.println("4. Quit");
             System.out.print("\n>");
-
             String option = inputScanner.nextLine();
-
 
             switch (option) {
                 case "1":

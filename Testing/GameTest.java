@@ -8,8 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,7 +56,7 @@ class GameTest{
 
     @Test
     void requestCodeLetter(){
-        String stimulus = "letter\n/giveup\ny";
+        String stimulus = "game\nletter\n/quit";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         InputStream old = System.in;
         try {
@@ -70,15 +69,15 @@ class GameTest{
             System.setIn(old);
         }
     }
-
     @Test
     void requestCodeNumber(){
-        String stimulus = "number\n/giveup\ny";
+        String stimulus = "game\nnumber\n/quit";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         InputStream old = System.in;
         try {
             System.setIn(testInput);
             game = new Game(new Player());
+            game.playGame();
             assertEquals("BullsAndCows.NumbersCode",game.getCodeGame().getClass().getName());
             System.out.println("Code Generated - " + Arrays.toString(game.getCodeGame().getCode()));
         }
@@ -88,7 +87,7 @@ class GameTest{
     }
     @Test
     void playerEntersGuess(){
-        String stimulus = "number\n11,22,33,44\n/guess\n/giveup\ny";
+        String stimulus = "game\nnumber\n11,22,33,44\n/guess\n/quit";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         InputStream old = System.in;
         try {
@@ -104,7 +103,7 @@ class GameTest{
 
     @Test
     void playerEntersSuccessfulGuess(){
-        String stimulus = "number\n91,82,73,64\n/guess\n/giveup\ny";
+        String stimulus = "game\nnumber\n91,82,73,64\n/guess\n/quit";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         InputStream old = System.in;
         try {
@@ -197,6 +196,7 @@ class GameTest{
         finally {
             System.setIn(old);
         }
+        System.out.println("Simulated Input for this test\n" + stimulus);
     }
     @Test
     void playerEntersGuess2(){
@@ -293,6 +293,8 @@ class GameTest{
         String stimulus = "2\nBarry\n6";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
+
+        game = new Game();
         game.playGame2();
 
         File saveFile = new File("./BullsAndCows/players.txt");

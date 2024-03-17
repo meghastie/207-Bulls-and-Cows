@@ -46,7 +46,7 @@ public class Player {
         File saveFile = new File(playerSavePath + this.username + ".txt");
 
         try {
-            saveFile.createNewFile();
+            boolean thing = saveFile.createNewFile();
         }
         catch(IOException e){
             System.out.println("Code storage file couldn't be created!");
