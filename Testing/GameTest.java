@@ -299,5 +299,33 @@ class GameTest{
         }
     }
 
+    @Test
+    void trackDecipheredTest(){
+        String stimulus = "91,82,73,64\n/submit\n";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        InputStream old = System.in;
+        try {
+            System.setIn(testInput);
+            SecretCode code = new NumbersCode(new char[]{'9','8','7','6'});
+            Player Barry = new Player("Barry",0,0,0,0,0);
+            game = new Game(Barry, code);
+            game.testGuessOptions();
+            assertArrayEquals(new int[]{4,0},game.getCodeGame().compareCode(code.getCode()));
+            Barry.incrementCodesAttempted();
+            game.getPlayerList().saveUpdatedPlayers();
+        }
+        finally {
+            System.setIn(old);
+        }
+
+        File saveFile = new File("./BullsAndCows/players.txt");
+        try {
+            Scanner fileRead = new Scanner(saveFile);
+            assertEquals("Barry,4,0,4,1,1", fileRead.nextLine());
+        }
+        catch(FileNotFoundException e){
+            fail();
+        }
+    }
     //</editor-fold>
 }

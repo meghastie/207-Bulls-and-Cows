@@ -40,6 +40,7 @@ public class Game {
         this.currentPlayer = p;
         this.codeGame = setCode;
         allPlayers = new Players();
+        allPlayers.addPlayer(p);
         resetGuess();
         inputScanner = new Scanner(System.in);
     }
