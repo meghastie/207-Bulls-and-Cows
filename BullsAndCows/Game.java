@@ -14,7 +14,7 @@ public class Game {
 
     //<editor-fold desc="Fields">
 
-    private final int CODELENGTH = 10;
+    private final int CODELENGTH = 4;
 
     private enum STAGE{
         LOGIN,

@@ -13,8 +13,8 @@ public class NumbersCode extends SecretCode {
     }
     public char[] generateCode(int codeLength) {
         Random rand = new Random();
-        int min = 10^(codeLength-1);
-        int max = 10^(codeLength) - 1;
+        int min = (int) Math.pow(10, codeLength-1);
+        int max = (int) Math.pow(10, codeLength) - 1;
 
         numCode = rand.nextInt(max - min + 1) + min; //generates random 4 digit number
         char[] code = Integer.toString(numCode).toCharArray();

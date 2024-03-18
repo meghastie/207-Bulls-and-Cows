@@ -15,7 +15,7 @@ class NumbersCodeTest {
 
     @BeforeEach
     void getCodes(){
-        code = new NumbersCode();
+        code = new NumbersCode(4);
         setCode = new NumbersCode(new char[]{'4','5','6','7'});
     }
 
@@ -33,11 +33,11 @@ class NumbersCodeTest {
 
     @Test
     void generateCode(){
-        char[] word = code.generateCode();
+        char[] word = code.generateCode(4);
         assertFalse(NumbersCode.hasDuplicateCharacter(word));
         //check if truly random
-        char[] newWord = code.generateCode();
-        code.generateCode();
+        char[] newWord = code.generateCode(4);
+        code.generateCode(4);
         assertFalse(Arrays.equals(new int[] {4,0},code.compareCode(newWord)));
     }
 
