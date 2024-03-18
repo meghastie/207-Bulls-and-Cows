@@ -204,7 +204,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game(new NumbersCode());
+            game = new Game(new NumbersCode(4));
             game.testGuessOptions();
             assertArrayEquals(new char[]{'1', '2', '3', '4'}, game.getGuess());
         }

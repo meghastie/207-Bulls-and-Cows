@@ -14,6 +14,8 @@ public class Game {
 
     //<editor-fold desc="Fields">
 
+    private final int CODELENGTH = 10;
+
     private enum STAGE{
         LOGIN,
         MENU,
@@ -433,14 +435,14 @@ public class Game {
                     return false;
 
                 case "1":
-                    codeGame = new NumbersCode();
+                    codeGame = new NumbersCode(CODELENGTH);
                     System.out.println("\nNew number based code game created!");
                     if (currentPlayer != null)
                         currentPlayer.incrementCodesAttempted();
                     return true;
 
                 case "2":
-                    codeGame = new LettersCode();
+                    codeGame = new LettersCode(CODELENGTH);
                     System.out.println("\nNew letter based code game created!");
                     if (currentPlayer != null)
                         currentPlayer.incrementCodesAttempted();
@@ -845,16 +847,16 @@ public class Game {
                     printHelp();
                     break;
                 case "number":
-                    codeGame = new NumbersCode();
+                    codeGame = new NumbersCode(CODELENGTH);
                     check = false;
                     break;
                 case "letter":
-                    codeGame = new LettersCode();
+                    codeGame = new LettersCode(CODELENGTH);
                     check = false;
                     break;
                 //Case purely for testing
                 case "letterinvalidfile":
-                    codeGame = new LettersCode();
+                    codeGame = new LettersCode(CODELENGTH);
                 default:
                     System.out.println("Enter a valid command");
                     break;
@@ -905,15 +907,26 @@ public class Game {
     @return formatted string of Guess array
      */
     String showGuess() {
-        return "[ " + this.Guess[0] + " ] [ " + this.Guess[1] + " ] [ " + this.Guess[2] + " ] [ " + this.Guess[3] + " ]";
+
+        String formattedGuess = "";
+
+        for(int i = 0; i < CODELENGTH; i++){
+            formattedGuess = formattedGuess + "[ " + this.Guess[i] + " ] ";
+        }
+        return formattedGuess;
     }
 
     /*
     Resets the current guess for making a new guess
      */
     void resetGuess() {
-        this.Guess = new char[]{'\0', '\0', '\0', '\0'};
-        this.preChangeGuess = new char[]{'\0', '\0', '\0', '\0'};
+        this.Guess = new char[CODELENGTH];
+        this.preChangeGuess = new char[CODELENGTH];
+
+        for(int i = 0; i < CODELENGTH; i++){
+            this.Guess[i] = '\0';
+            this.preChangeGuess[i] = '\0';
+        }
     }
 
     /*
@@ -965,7 +978,7 @@ public class Game {
     */
     private void enterGuess(int position, char val) {
         // Checks if given position is out of range
-        if (position < 0 || position > 4) {
+        if (position < 0 || position >= CODELENGTH) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
@@ -1005,7 +1018,7 @@ public class Game {
                 currentPlayer.updateCows(bullsCows[1]);
                 currentPlayer.incrementGuesses();
             }
-            return bullsCows[0] == 4;
+            return bullsCows[0] == CODELENGTH;
         }
 
         return false;
@@ -1030,7 +1043,7 @@ public class Game {
        */
     private boolean validateGuessInput(){
 
-        for(int i = 0; i<4; i++){
+        for(int i = 0; i<CODELENGTH; i++){
 
             // Checks for missing value
             if(Guess[i] == '\0'){
@@ -1039,7 +1052,7 @@ public class Game {
             }
 
             // Checks for duplicate values
-            for (int j = i + 1; j<4; j++) {
+            for (int j = i + 1; j<CODELENGTH; j++) {
                 if (Guess[i] == Guess[j]) {
                     System.out.println("Duplicate value present at positions " + i + " & " + j);
                     return false;
@@ -1065,11 +1078,11 @@ public class Game {
                 return false;
             }
 
-            if (Integer.parseInt(undoPos) >= 1 && Integer.parseInt(undoPos) <= 4) {
+            if (Integer.parseInt(undoPos) >= 1 && Integer.parseInt(undoPos) <= CODELENGTH) {
                 undoGuess(Integer.parseInt(undoPos) - 1);
                 return true;
             } else {
-                System.out.println("\nError: Please choose a position between 1 and 4, or press ENTER to exit\n");
+                System.out.println("\nError: Please choose a position between 1 and" + CODELENGTH + ", or press ENTER to exit\n");
             }
         }
     }

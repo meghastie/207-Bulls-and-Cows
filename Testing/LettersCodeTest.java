@@ -13,18 +13,18 @@ class LettersCodeTest {
     LettersCode setCode;
     @BeforeEach
     void getCodes(){
-        code = new LettersCode();
+        code = new LettersCode(4);
         setCode = new LettersCode(new char[] {'b','l','i','m'});
     }
 
     @Test
     void generateCode() {
         //see if code is coming from the list
-        String word = new String(code.generateCode());
+        String word = new String(code.generateCode(4));
         assertTrue(code.getWord().contains(word));
 
         //see if the code is random
-        String newWord = new String(code.generateCode());
+        String newWord = new String(code.generateCode(4));
         assertNotEquals(newWord, word);
     }
 

@@ -4,17 +4,17 @@ import java.util.Random;
 
 public class NumbersCode extends SecretCode {
     private int numCode;
-    public NumbersCode() {
-        generateCode();
+    public NumbersCode(int codeLength) {
+        super(codeLength);
     }
     public NumbersCode(char[] code){
         super(code);
         numCode = Integer.parseInt(String.valueOf(code));
     }
-    public char[] generateCode() {
+    public char[] generateCode(int codeLength) {
         Random rand = new Random();
-        int min = 1000;
-        int max = 9999;
+        int min = 10^(codeLength-1);
+        int max = 10^(codeLength) - 1;
 
         numCode = rand.nextInt(max - min + 1) + min; //generates random 4 digit number
         char[] code = Integer.toString(numCode).toCharArray();

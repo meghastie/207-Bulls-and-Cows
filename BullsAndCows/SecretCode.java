@@ -6,15 +6,15 @@ public abstract class SecretCode {
     SecretCode(char[] savedCode){
         this.code = savedCode;
     }
-    SecretCode(){
-        this.code = generateCode();
+    SecretCode(int codeLength){
+        this.code = generateCode(codeLength);
     }
 
     public char[] getCode() {
         return code;
     }
 
-    abstract char[] generateCode();
+    abstract char[] generateCode(int codeLength);
 
     /*
         Compares the passed guess to the secret code
@@ -25,8 +25,8 @@ public abstract class SecretCode {
     public int[] compareCode(char[] guess){
         int[] bullsCows = {0,0};
 
-        for(int i=0; i<4; i++){
-            for(int j=0; j<4; j++){
+        for(int i=0; i< guess.length; i++){
+            for(int j=0; j< guess.length; j++){
                 if(guess[i] == code[j]){
                     if(i==j)
                         bullsCows[0]++;
