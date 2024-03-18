@@ -3,11 +3,10 @@ package Testing;
 import org.junit.jupiter.api.*;
 import BullsAndCows.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -331,8 +330,38 @@ class GameTest{
     }
 
     @Test
+    void overwriteSaveGame(){
+        String stimulus = "2\nBarry\n1\n1\n/save\ny\n6";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+        File saveFile = new File("./BullsAndCows/playerSaves/Barry.txt");
+        String before = "";
+
+        game = new Game();
+        game.playGame2();
+
+        try {
+            Scanner fileRead = new Scanner(saveFile);
+            String codeDetails = fileRead.nextLine();
+            before = codeDetails.split(";")[2];
+        }
+        catch(FileNotFoundException ignored) {
+        }
+
+        stimulus = "1\nBarry\n1\n1\n/save\ny\n6";
+        testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+
+        game = new Game();
+        game.playGame2();
+
+        String after = Arrays.toString(game.getCodeGame().getCode());
+        assertNotEquals(before,after);
+    }
+
+    @Test
     void loadExistingGame(){
-        String stimulus = "/save";
+        String stimulus = "/save\ny";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
@@ -359,7 +388,7 @@ class GameTest{
         playerList.addPlayer(Barry);
         playerList.saveUpdatedPlayers();
 
-        String stimulus = "1\nBarry\n1\n3\nback\n6";
+        String stimulus = "1\nBarry\n1\n3\nback\nback\n6";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
@@ -391,6 +420,35 @@ class GameTest{
         checkInFile("Barry,4,0,4,1,1");
     }
 
+    @Test
+    void dontIncrementAttemptWhenLoading(){
+        final DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd;HH:mm:ss");
+        final String playerSavePath = "./BullsAndCows/playerSaves/" + "Barry"+ ".txt";
+
+        try {
+            FileOutputStream fileOut = new FileOutputStream(playerSavePath, false);
+            fileOut.write(LocalDateTime.now().format(CUSTOM_FORMATTER).getBytes());
+            fileOut.write((";" + "abcd" + "\n").getBytes());
+            fileOut.close();
+
+        }
+        catch (IOException e) {
+            System.err.println("\nFatal IO error; this shouldn't happen");
+            System.exit(0);
+        }
+        String stimulus = "2\nBarry\n1\n3\n1\n/giveup\ny\n6";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        InputStream old = System.in;
+        try{
+            System.setIn(testInput);
+            game =new Game();
+            game.playGame2();
+        }
+        finally{
+            System.setIn(old);
+        }
+        checkInFile("Barry,0,0,0,0,0");
+    }
 
     @Test
     void trackAttemptedTest(){
@@ -398,7 +456,7 @@ class GameTest{
         playerList.addPlayer(new Player("Barry",0,0,0,0,0));
         playerList.saveUpdatedPlayers();
 
-        String stimulus = "1\nBarry\n1\n1\n/save\n6";
+        String stimulus = "1\nBarry\n1\n1\n/save\ny\n6";
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
@@ -417,4 +475,25 @@ class GameTest{
         checkInFile("Barry,0,0,0,1,0");
     }
     //</editor-fold>
+    @Test
+    void invalidPlayerLoad(){
+        String stimulus = "1\nHarold\nback\n4";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+
+        game = new Game();
+        game.playGame2();
+
+        assertNull(game.getCurrentPlayer());
+    }
+
+    @Test
+    void detailsWithNoGuesses(){
+        assertFalse(game.print_player_details_testing(new Player("Barry",0,0,0,0,0)));
+    }
+
+    @Test
+    void detailsWithGuesses(){
+        assertTrue(game.print_player_details_testing(new Player("Barry",0,0,1,0,0)));
+    }
 }

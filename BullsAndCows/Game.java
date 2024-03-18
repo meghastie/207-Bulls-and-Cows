@@ -1,6 +1,8 @@
 package BullsAndCows;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,6 +82,10 @@ public class Game {
 
     public Players getPlayerList(){
         return allPlayers;
+    }
+
+    public Player getCurrentPlayer(){
+        return currentPlayer;
     }
 
     //</editor-fold>
@@ -377,11 +383,6 @@ public class Game {
                 """;
         System.out.println(commands);
 
-        try{
-            System.in.read();
-        }
-        catch(IOException e){
-        }
     }
 
     /*
@@ -406,12 +407,6 @@ public class Game {
                 Other commands are as follows:""";
 
         System.out.println(instructions);
-
-        try{
-            System.in.read();
-        }
-        catch(IOException e){
-        }
     }
 
     /*
@@ -454,6 +449,9 @@ public class Game {
                 case "3":
                     if(currentPlayer != null){
                         if(loadGame()) {
+                            try {
+                                var temp = Files.deleteIfExists(Path.of("./BullsAndCows/playerSaves/" + this.currentPlayer.getUsername() + ".txt"));
+                            }catch (IOException ignored){}
                             return true;
                         }
                         break;
@@ -587,6 +585,8 @@ public class Game {
                         return;
                     }
                     break;
+                case "/hint":
+                    break;
 
                 case "/undo":
                     undoConfirmation();
@@ -595,6 +595,10 @@ public class Game {
                     changeGuess(userInput);
             }
         }
+    }
+
+    boolean hint(){
+        return true;
     }
 
     /*
@@ -617,6 +621,26 @@ public class Game {
     @return If the save was successful or not
      */
     private boolean save(){
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("./BullsAndCows/playerSaves/" + this.currentPlayer.getUsername() + ".txt"));
+            if (br.readLine() != null) {
+                System.out.println("overwrite save?(y/n)");
+                while(true){
+                    String input = inputScanner.nextLine();
+                    if(Objects.equals(input, "y")){
+                        break;
+                    }
+                    else if(Objects.equals(input, "n")){
+                        return true;
+                    }
+                    else{
+                        System.out.println("Invalid input. Overwrite save? (y/n)");
+                    }
+                }
+            }
+        } catch (IOException ignored) {
+        }
+
         if(currentPlayer == null){
             System.out.println("\nTo save a game, you must first create an account, or login to an existing one");
             return false;
@@ -842,10 +866,11 @@ public class Game {
     Prints how to choose a game type
      */
     private void printHelp(){
-        System.out.println("Possible commands\n" +
-                "/number select number game\n" +
-                "/letter select letter game\n" +
-                "/help shows list of commands");
+        System.out.println("""
+                Possible commands
+                /number select number game
+                /letter select letter game
+                /help shows list of commands""");
     }
 
     /*
@@ -1061,7 +1086,7 @@ public class Game {
         final String playerSavePath = "./BullsAndCows/playerSaves/" + this.currentPlayer.getUsername() + ".txt";
 
         try {
-            FileOutputStream fileOut = new FileOutputStream(playerSavePath, true);
+            FileOutputStream fileOut = new FileOutputStream(playerSavePath, false);
             fileOut.write(LocalDateTime.now().format(CUSTOM_FORMATTER).getBytes());
             fileOut.write((";" + showSolution() + "\n").getBytes());
             fileOut.close();
@@ -1237,7 +1262,8 @@ public class Game {
             return;
         }
 
-        print_player_details(currentPlayer);
+        boolean status = print_player_details(currentPlayer);
+        /*
         try {
             System.in.read();
         }
@@ -1245,6 +1271,7 @@ public class Game {
             System.out.println("\nProgram has encountered a problem!");
             System.out.println("Returning to menu...");
         }
+        */
     }
 
     /*
@@ -1261,12 +1288,20 @@ public class Game {
         }
     }
 
+    public boolean print_player_details_testing(Player p){
+        return print_player_details(p);
+    }
+
     /*
     Prints all of a user's details
 
     @param p    The player to be printed
      */
-    private void print_player_details(Player p){
+    private boolean print_player_details(Player p){
+        if(p.getGuesses() == 0){
+            System.out.println("Try playing a game first");
+            return false;
+        }
         System.out.println("USERNAME:        " + p.getUsername());
         System.out.println("CODES ATTEMPTED: " + p.getCodesAttempted());
         System.out.println("CODES COMPLETED: " + p.getCodesDeciphered());
@@ -1288,6 +1323,7 @@ public class Game {
         }
 
         System.out.println();
+        return true;
     }
 
     /*
