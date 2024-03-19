@@ -16,7 +16,7 @@ class GameTest{
 
     @BeforeEach
     void setUp(){
-        game = new Game();
+        game = new Game(4);
         game.getPlayerList().clearSaves();
     }
 
@@ -42,7 +42,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game();
+            game = new Game(4);
         }
         finally {
             System.setIn(old);
@@ -60,7 +60,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game(new Player());
+            game = new Game(new Player(), 4);
             game.playGame();
             assertEquals("BullsAndCows.LettersCode",game.getCodeGame().getClass().getName());
         }
@@ -75,7 +75,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game(new Player());
+            game = new Game(new Player(), 4);
             game.playGame();
             assertEquals("BullsAndCows.NumbersCode",game.getCodeGame().getClass().getName());
             System.out.println("Code Generated - " + Arrays.toString(game.getCodeGame().getCode()));
@@ -91,7 +91,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game(new Player());
+            game = new Game(new Player(), 4);
             game.playGame();
             assertArrayEquals(new char[]{'1', '2', '3', '4'}, game.getGuess());
         }
@@ -108,7 +108,7 @@ class GameTest{
         try {
             System.setIn(testInput);
             SecretCode code = new NumbersCode(new char[]{'9','8','7','6'});
-            game = new Game(new Player(),code);
+            game = new Game(new Player(),code, 4);
             game.playGame();
             assertArrayEquals(new int[]{4,0},game.getCodeGame().compareCode(code.getCode()));
         }
@@ -124,7 +124,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game(new Player());
+            game = new Game(new Player(),4);
         }
         finally {
             System.setIn(old);
@@ -171,7 +171,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game();
+            game = new Game(4);
             game.playGame2();
             assertEquals("BullsAndCows.LettersCode",game.getCodeGame().getClass().getName());
         }
@@ -187,7 +187,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game();
+            game = new Game(4);
             game.playGame2();
             assertEquals("BullsAndCows.NumbersCode",game.getCodeGame().getClass().getName());
             System.out.println("Code Generated - " + Arrays.toString(game.getCodeGame().getCode()));
@@ -204,7 +204,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game(new NumbersCode(4));
+            game = new Game(new NumbersCode(4), 4);
             game.testGuessOptions();
             assertArrayEquals(new char[]{'1', '2', '3', '4'}, game.getGuess());
         }
@@ -221,7 +221,7 @@ class GameTest{
         try {
             System.setIn(testInput);
             SecretCode code = new NumbersCode(new char[]{'9','8','7','6'});
-            game = new Game(code);
+            game = new Game(code,4);
             game.testGuessOptions();
             assertArrayEquals(new int[]{4,0},game.getCodeGame().compareCode(code.getCode()));
         }
@@ -237,7 +237,7 @@ class GameTest{
         InputStream old = System.in;
         try {
             System.setIn(testInput);
-            game = new Game();
+            game = new Game(4);
         }
         finally {
             System.setIn(old);
@@ -293,7 +293,7 @@ class GameTest{
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
-        game = new Game();
+        game = new Game(4);
         game.playGame2();
 
         File saveFile = new File("./BullsAndCows/players.txt");
@@ -313,7 +313,7 @@ class GameTest{
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
-        game = new Game();
+        game = new Game(4);
         game.playGame2();
 
         String code = Arrays.toString(game.getCodeGame().getCode());
@@ -337,7 +337,7 @@ class GameTest{
         File saveFile = new File("./BullsAndCows/playerSaves/Barry.txt");
         String before = "";
 
-        game = new Game();
+        game = new Game(4);
         game.playGame2();
 
         try {
@@ -352,7 +352,7 @@ class GameTest{
         testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
-        game = new Game();
+        game = new Game(4);
         game.playGame2();
 
         String after = Arrays.toString(game.getCodeGame().getCode());
@@ -367,7 +367,7 @@ class GameTest{
 
         Player Barry = new Player("Barry",0,0,0,0,0);
 
-        game = new Game(Barry, new NumbersCode(new char[]{'1','1','1','1'}));
+        game = new Game(Barry, new NumbersCode(new char[]{'1','1','1','1'}), 4);
         game.testGuessOptions();
         game.getPlayerList().saveUpdatedPlayers();
 
@@ -375,7 +375,7 @@ class GameTest{
         testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
-        game = new Game();
+        game = new Game(4);
         game.playGame2();
 
         assertArrayEquals(new char[]{'1','1','1','1'}, game.getCodeGame().getCode());
@@ -392,7 +392,7 @@ class GameTest{
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
-        game = new Game();
+        game = new Game(4);
         game.playGame2();
 
         assertNull(game.getCodeGame());
@@ -407,7 +407,7 @@ class GameTest{
             System.setIn(testInput);
             SecretCode code = new NumbersCode(new char[]{'9','8','7','6'});
             Player Barry = new Player("Barry",0,0,0,0,0);
-            game = new Game(Barry, code);
+            game = new Game(Barry, code, 4);
             game.testGuessOptions();
             assertArrayEquals(new int[]{4,0},game.getCodeGame().compareCode(code.getCode()));
             Barry.incrementCodesAttempted();
@@ -441,7 +441,7 @@ class GameTest{
         InputStream old = System.in;
         try{
             System.setIn(testInput);
-            game =new Game();
+            game =new Game(4);
             game.playGame2();
         }
         finally{
@@ -460,7 +460,7 @@ class GameTest{
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
-        game = new Game();
+        game = new Game(4);
         game.playGame2();
 
         checkInFile("Barry,0,0,0,1,0");
@@ -469,7 +469,7 @@ class GameTest{
         stimulus = "1\nBarry\n1\n3\n1\n/giveup\ny\n6";
         testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
-        game = new Game();
+        game = new Game(4);
         game.playGame2();
 
         checkInFile("Barry,0,0,0,1,0");
@@ -481,7 +481,7 @@ class GameTest{
         InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
         System.setIn(testInput);
 
-        game = new Game();
+        game = new Game(4);
         game.playGame2();
 
         assertNull(game.getCurrentPlayer());

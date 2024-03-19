@@ -14,7 +14,7 @@ public class Game {
 
     //<editor-fold desc="Fields">
 
-    private final int CODELENGTH = 4;
+    private final int CODELENGTH;
 
     private enum STAGE{
         LOGIN,
@@ -40,7 +40,8 @@ public class Game {
     //<editor-fold desc="Constructors">
 
     //Testing Constructor
-    public Game(Player p, SecretCode setCode){
+    public Game(Player p, SecretCode setCode, int codeLength){
+        CODELENGTH = codeLength;
         this.currentPlayer = p;
         this.codeGame = setCode;
         allPlayers = new Players();
@@ -50,21 +51,24 @@ public class Game {
     }
 
     // old Testing Constructor
-    public Game(SecretCode setCode){
+    public Game(SecretCode setCode, int codeLength){
+        CODELENGTH = codeLength;
         codeGame = setCode;
         allPlayers = new Players();
         resetGuess();
         inputScanner = new Scanner(System.in);
     }
     //old Testing Constructor
-    public Game(Player p){
+    public Game(Player p, int codeLength){
+        CODELENGTH = codeLength;
         this.currentPlayer = p;
         allPlayers = new Players();
         resetGuess();
         inputScanner = new Scanner(System.in);
     }
 
-    public Game(){
+    public Game(int codeLength){
+        CODELENGTH = codeLength;
         allPlayers = new Players();
         resetGuess();
         inputScanner = new Scanner(System.in);
