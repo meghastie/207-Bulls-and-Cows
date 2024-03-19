@@ -474,7 +474,7 @@ class GameTest{
 
         checkInFile("Barry,0,0,0,1,0");
     }
-    //</editor-fold>
+
     @Test
     void invalidPlayerLoad(){
         String stimulus = "1\nHarold\nback\n4";
@@ -496,4 +496,6 @@ class GameTest{
     void detailsWithGuesses(){
         assertTrue(game.print_player_details_testing(new Player("Barry",0,0,1,0,0)));
     }
+
+    //</editor-fold>
 }
