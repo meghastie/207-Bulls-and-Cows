@@ -3,7 +3,7 @@ package BullsAndCows;
 import java.util.Random;
 
 public abstract class SecretCode {
-    private char[] code;
+    final private char[] code;
     private boolean[] hintsUsed;
 
     SecretCode(char[] savedCode){

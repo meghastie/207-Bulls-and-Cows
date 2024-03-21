@@ -96,188 +96,12 @@ public class Game {
     }
 
     //</editor-fold>
-
-    /*
-    Main game loop for one "round" each time function is called
-    @param is the game type a number game? (True -> number game, False -> letter game)
-    */
-    public void playGame() {
-        // Main game loop (Noa)
-        // introduce game
-
-        System.out.println("\n\nWelcome to Bulls and Cows. Please alter and submit your guess, or type /help for instructions of how to play. To start, enter 'game'");
-
-        // local variables
-        boolean gameOver = false, finishInputGuess, givenUp;
-
-        String userInput;
-
-        /*
-        Switch statement inputted twice: allows user to log in/help/ any other commands before they start the game. if the user wants to just play the game straight away, they just input 'game'
-         */
-        do {
-            userInput = inputScanner.nextLine();
-
-            if (codeGame == null) {
-                switch (userInput.toLowerCase()) {          // cases for all user commands
-
-                    case "/login":
-                        if (loginUser()) {
-                            System.out.println("\nLogged in as: " + this.currentPlayer.getUsername());
-                        } else {
-                            System.out.println("\nLogin cancelled.");
-                        }
-                        break;
-
-                    case "/help":
-                        printInstructions();
-                        break;
-
-                    case "/stats":
-                        print_player_details(this.currentPlayer);
-                        break;
-
-                    case "/quit":
-                        System.out.println("\nQuitting current game.");
-                        gameOver = true;
-                        break;
-
-                    case "game":
-                        gameSelection();
-                        break;
-
-                    default:                                // case when input is not recognised
-                        System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again, or type 'game' to begin the game.");
-                        break;
-
-                }
-            }
-        } while (!userInput.equalsIgnoreCase("game"));
-
-        while (!gameOver) {                                     // begin game loop
-            finishInputGuess = false;
-            givenUp = false;
-
-            while (!finishInputGuess) {                          // begin loop for making guess
-                //inputScanner = new Scanner(System.in);
-                System.out.println("\n\nCurrent Guess: " + showGuess() + "\n>>> ");
-                userInput = inputScanner.nextLine();            // receive input
-                if (userInput == null || userInput.isEmpty()) {
-                    System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
-                } else if (userInput.charAt(0) != '/') {               // input is not a user command
-                    ArrayList<String> completedChanges = inputGuessChange(userInput);
-                    if (completedChanges.isEmpty()) {
-                        System.out.println("\nNo changes completed, maybe input had incorrect format?");
-                    } else {
-                        System.out.println("\nChanges completed: " + completedChanges);
-                    }
-
-                } else {                                        // input is a user command, or invalid
-
-                    switch (userInput.toLowerCase()) {          // cases for all user commands
-
-                        case "/login":
-                            if (loginUser()) {
-                                System.out.println("\nLogged in as: " + this.currentPlayer.getUsername());
-                            } else {
-                                System.out.println("\nLogin cancelled.");
-                            }
-                            break;
-
-                        case "/help":
-                            printInstructions();
-                            break;
-
-                        case "/guess":
-                            finishInputGuess = true;
-                            break;
-
-                        case "/hint":
-                            System.out.println(this.codeGame.getHint());
-                            break;
-
-                        case "/giveup":
-                            if (giveUpConfirmation()) {
-                                System.out.println("\nSolution: " + showSolution());
-                                givenUp = true;
-                                finishInputGuess = true;
-                            }
-                            break;
-
-                        case "/undo":
-                            if (undoConfirmation()) {
-                                System.out.println("\nUndo Confirmed.");
-                            } else {
-                                System.out.println("\nUndo Cancelled.");
-                            }
-                            break;
-
-                        case "/save":
-                            if (this.currentPlayer != null) {
-                                if (this.saveGame()) {
-                                    givenUp = true;
-                                    finishInputGuess = true;
-                                }
-                            } else {
-                                System.out.println("\nNo user logged in. You must be logged in to save and load games. Try /login.");
-                            }
-
-                            break;
-
-                        case "/load":
-                            if (this.currentPlayer != null) {
-                                if (this.loadGame()) {
-                                    this.currentPlayer.incrementCodesAttempted();
-                                }
-                            } else {
-                                System.out.println("\nNo user logged in. You must be logged in to save and load games. Try /login.");
-                            }
-
-                            break;
-
-                        case "/stats":
-                            print_player_details(this.currentPlayer);
-                            break;
-
-                        case "/quit":
-                            System.out.println("\nQuitting current game.");
-                            gameOver = true;
-                            finishInputGuess = true;
-                            break;
-
-                        default:                                // case when input is not recognised
-                            System.out.println("\nInput not recognised as a command or guess, try /help to see instructions and try again.");
-                            break;
-                    }
-                }
-            }
-
-            // valid input has been given
-            //gameOver = givenUp;
-
-            if (!gameOver) {
-                if (submitGuess()) {
-                    System.out.println("\nCongratulations, your guess was correct!!!");
-                    currentPlayer.incrementCodesDeciphered();
-                    gameOver = true;
-                } else {
-                    System.out.println("\nYour guess was incorrect, try again.");
-                }
-            }
-        }
-        if(currentPlayer != null){
-            this.currentPlayer.incrementCodesAttempted();
-            this.allPlayers.saveUpdatedPlayers();
-        }
-        System.out.println("\n\nGame Over :)");
-    }
-
     //<editor-fold desc="Play Game 2 Methods"
 
     /*
     A stage-by-stage game play loop. Uses an enum to keep track of the stage
     */
-    public void playGame2(){
+    public void playGame2() {
         STAGE stage = STAGE.LOGIN;
         System.out.println("\n\nWelcome to Bulls and Cows!");
 
@@ -329,36 +153,6 @@ public class Game {
     }
 
     /*
-    Prints the instructions
-     */
-    private void printInstructions(){
-        final String instructions = """
-
-                HOW TO PLAY
-
-                You are tasked with deciphering a secret code, consisting of either 4 different numbers or letters.
-                Each guess you make, you will be shown how many 'Bulls' and 'Cows' you managed to get, meaning how many numbers / letters you got correct & in the right position, and how many you just got correct, respectively.
-                COMMANDS
-                
-                Before the game begins, you are able to:
-                \t/login -\tLogin or create an account to save your score and statistics, and maybe you can top the leaderboard!
-                \t/stats -\tView current user's game play statistics, such as accuracy over all games.
-                \t/quit -\tQuit game completely.
-                \tgame - \tStart the game.
-
-                You begin with an empty guess. To set one of the characters in your guess, type the letter / number you wish to guess, followed by the position to put that guess (between 1 and 4), e.g. a4. To change more than one position at a time, simply enter a comma followed by your next guess, e.g. a4,g1,h3. Note there are no spaces
-                Other commands are as follows (as well as commands above):
-                \t/hint -\tIf you are stuck, receive a hint for your guess
-                \t/giveup -\tIf you are really stuck, you can give up and see the solution
-                \t/guess -\tSubmit your completed guess, all positions of your guess must be filled.
-                \t/undo -\t If you want to undo a change you've made to your guess (only one undo can be made to any given position).
-                \t/save -\tSave the secret code you are currently guessing to try again later.
-                \t/load -\tLoad a previous secret code to resume guessing.""";
-
-        System.out.println(instructions);
-    }
-
-    /*
     Displays the list of commands required to play the game and how to change a guess
      */
     private void printCommands(){
@@ -383,7 +177,6 @@ public class Game {
                 
                 """;
         System.out.println(commands);
-
     }
 
     /*
@@ -597,11 +390,6 @@ public class Game {
         }
     }
 
-    boolean hint(){
-        return true;
-    }
-
-
     /*
     Attempts to change one of the guess positions
 
@@ -796,83 +584,7 @@ public class Game {
         allPlayers.addPlayer(currentPlayer);
     }
 
-    /*
-    Logs player out by setting the user to null
-     */
-    private void logOut(){
-        currentPlayer = null;
-    }
-
     //</editor-fold>
-
-    /*
-    Create account for / log in the user
-    @return true if login not cancelled by user
-     */
-    private boolean loginUser() {
-        if (this.currentPlayer != null) {
-            System.out.println("\nWarning: This will log out user (" + this.currentPlayer.getUsername() + ")");
-        }
-        System.out.println("\nEnter the user you wish to login >>>");
-
-        String userLogin = inputScanner.nextLine();
-
-        if (userLogin.compareTo("") == 0) {
-            return false;
-        } else {
-            this.currentPlayer = this.allPlayers.findPlayer(userLogin);
-
-            if (this.currentPlayer == null) {
-                this.currentPlayer = new Player(userLogin);
-                System.out.println("\nCreating account with username: " + userLogin);
-            }
-
-            return true;
-        }
-    }
-
-
-    /*
-   Requests the user to select one of the two game-types
-   */
-    public void gameSelection(){
-        boolean check = true;
-        while(check){
-            //inputScanner = new Scanner(System.in);
-            System.out.println("What type of game do you want to play? number or letter?");
-            String input = inputScanner.nextLine().toLowerCase();
-            switch(input){
-                case "help":
-                    printHelp();
-                    break;
-                case "number":
-                    codeGame = new NumbersCode(CODELENGTH);
-                    check = false;
-                    break;
-                case "letter":
-                    codeGame = new LettersCode(CODELENGTH);
-                    check = false;
-                    break;
-                //Case purely for testing
-                case "letterinvalidfile":
-                    codeGame = new LettersCode(CODELENGTH);
-                default:
-                    System.out.println("Enter a valid command");
-                    break;
-            }
-        }
-    }
-
-    /*
-    Prints how to choose a game type
-     */
-    private void printHelp(){
-        System.out.println("""
-                Possible commands
-                /number select number game
-                /letter select letter game
-                /help shows list of commands""");
-    }
 
     /*
     Helper function for confirming the user wishes to give up
@@ -895,23 +607,7 @@ public class Game {
         }
     }
 
-    
-
     //<editor-fold desc="Guess Actions">
-
-    /*
-    Formats the array as a string to output
-    @return formatted string of Guess array
-     */
-    String showGuess() {
-
-        String formattedGuess = "";
-
-        for(int i = 0; i < CODELENGTH; i++){
-            formattedGuess = formattedGuess + "[ " + this.Guess[i] + " ] ";
-        }
-        return formattedGuess;
-    }
 
     /*
     Resets the current guess for making a new guess
@@ -1065,19 +761,19 @@ public class Game {
 
    @return If user wants to undo guess
     */
-    private boolean undoConfirmation() {
+    private void undoConfirmation() {
         while (true) {
             Scanner undoScan = inputScanner;
             System.out.println("\nWhat position of your guess do you wish to undo? >>>");
 
             String undoPos = undoScan.nextLine();
             if (undoPos.compareTo("") == 0) {
-                return false;
+                return;
             }
 
             if (Integer.parseInt(undoPos) >= 1 && Integer.parseInt(undoPos) <= CODELENGTH) {
                 undoGuess(Integer.parseInt(undoPos) - 1);
-                return true;
+                return;
             } else {
                 System.out.println("\nError: Please choose a position between 1 and" + CODELENGTH + ", or press ENTER to exit\n");
             }
@@ -1334,34 +1030,6 @@ public class Game {
 
         System.out.println();
         return true;
-    }
-
-    /*
-    Prints the total number of cows achieved by all players
-    */
-    void print_total_cows(){
-        System.out.println("TOTAL COWS ACHIEVED: " + allPlayers.getAllPlayerCows());
-    }
-
-    /*
-    Prints the total number of bulls achieved by all players
-    */
-    void print_total_bulls(){
-        System.out.println("TOTAL COWS ACHIEVED: " + allPlayers.getAllPlayerBulls());
-    }
-
-    /*
-    Prints the total number of codes attempted by all players
-    */
-    void print_total_attempts(){
-        System.out.println("TOTAL COWS ACHIEVED: " + allPlayers.getAllPlayersSecretCodesAttempted());
-    }
-
-    /*
-    Prints the total number of codes deciphered by all players
-    */
-    void print_total_deciphered(){
-        System.out.println("TOTAL COWS ACHIEVED: " + allPlayers.getAllPlayersSecretCodesDeciphered());
     }
 
     /*
