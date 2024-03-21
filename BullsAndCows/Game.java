@@ -33,6 +33,7 @@ public class Game {
     private SecretCode codeGame;
     public int status = 0;
     private Scanner inputScanner;
+    private boolean[] hintsUsed;
 
     //</editor-fold>
 
@@ -97,15 +98,6 @@ public class Game {
     //</editor-fold>
 
     /*
-   Get a hint from the secret code and return
-
-   @return a hint to help the user guess the code
-   */
-    String getHint() {
-        return "";
-    }
-
-    /*
     Main game loop for one "round" each time function is called
     @param is the game type a number game? (True -> number game, False -> letter game)
     */
@@ -117,6 +109,7 @@ public class Game {
 
         // local variables
         boolean gameOver = false, finishInputGuess, givenUp;
+
         String userInput;
 
         /*
@@ -200,7 +193,7 @@ public class Game {
                             break;
 
                         case "/hint":
-                            System.out.println(getHint());
+                            System.out.println(this.getHint());
                             break;
 
                         case "/giveup":
@@ -309,13 +302,15 @@ public class Game {
                     break;
 
                 case GAMESELECT:
-                    if(newGame())
+                    if(newGame()) {
                         stage = STAGE.GAME;
-                    else
+                    } else {
                         stage = STAGE.MENU;
+                    }
                     break;
 
                 case GAME:
+                    this.hintsUsed = new boolean[]{false, false, false, false};
                     guessOptions();
                     resetGuess();
                     stage = STAGE.MENU;
@@ -571,9 +566,7 @@ public class Game {
 
             switch (userInput) {
                 case "/submit":
-                    if (submit()) {
-                        return;
-                    }
+                    if (submit()) {return;}
                     break;
 
                 case "/help":
@@ -587,15 +580,15 @@ public class Game {
                     break;
 
                 case "/save":
-                    if(save()){
-                        return;
-                    }
+                    if(save()){return;}
                     break;
                 case "/hint":
+                    System.out.println(this.getHint());
                     break;
 
                 case "/undo":
                     undoConfirmation();
+                    break;
 
                 default:
                     changeGuess(userInput);
@@ -606,6 +599,7 @@ public class Game {
     boolean hint(){
         return true;
     }
+
 
     /*
     Attempts to change one of the guess positions
@@ -1089,6 +1083,28 @@ public class Game {
                 System.out.println("\nError: Please choose a position between 1 and" + CODELENGTH + ", or press ENTER to exit\n");
             }
         }
+    }
+
+    /*
+    Show the user a random letter / number from the secret code, unless they have used all their hints
+    (they are allowed half the code length of hints)
+    @return String with hint, or letting the user know they have no hints left
+     */
+    private String getHint() {
+        Random rand = new Random();
+        int randPos, counter = 0;
+
+        do {
+            randPos = rand.nextInt(CODELENGTH);
+            counter++;
+        } while (this.hintsUsed[randPos] && counter <= (CODELENGTH/2));
+
+        if (counter > (CODELENGTH/2)) {
+            return "\nYou have ran out of hints!";
+        }
+
+        this.hintsUsed[randPos] = true;
+        return "\nHINT: Position " + (randPos + 1) + " is [ " + this.codeGame.getCode()[randPos] + " ]";
     }
 
     //</editor-fold>
