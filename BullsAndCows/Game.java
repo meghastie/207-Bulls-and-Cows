@@ -470,6 +470,27 @@ public class Game {
     }
 
     /*
+    Helper function for confirming the user wishes to give up
+
+    @return If the user wants to give up
+     */
+    private boolean giveUpConfirmation() {
+        while (true) {
+            System.out.println("\nAre you sure you want to give up? (y / n) >>>");
+
+            String userConfirm = inputScanner.nextLine();
+
+            if (userConfirm.compareTo("y") == 0) {
+                return true;
+            } else if (userConfirm.compareTo("n") == 0) {
+                return false;
+            } else {
+                System.out.println("\nError: Please choose y / n\n");
+            }
+        }
+    }
+
+    /*
     Just a short method that checks if a guess was correct, then preforms appropriate actions.
 
     @return If the guess was correct
