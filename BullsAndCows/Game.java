@@ -193,7 +193,7 @@ public class Game {
                             break;
 
                         case "/hint":
-                            System.out.println(this.getHint());
+                            System.out.println(this.codeGame.getHint());
                             break;
 
                         case "/giveup":
@@ -310,7 +310,6 @@ public class Game {
                     break;
 
                 case GAME:
-                    this.hintsUsed = new boolean[]{false, false, false, false};
                     guessOptions();
                     resetGuess();
                     stage = STAGE.MENU;
@@ -583,8 +582,9 @@ public class Game {
                 case "/save":
                     if(save()){return;}
                     break;
+
                 case "/hint":
-                    System.out.println(this.getHint());
+                    System.out.println(this.codeGame.getHint());
                     break;
 
                 case "/undo":
@@ -1084,28 +1084,6 @@ public class Game {
                 System.out.println("\nError: Please choose a position between 1 and" + CODELENGTH + ", or press ENTER to exit\n");
             }
         }
-    }
-
-    /*
-    Show the user a random letter / number from the secret code, unless they have used all their hints
-    (they are allowed half the code length of hints)
-    @return String with hint, or letting the user know they have no hints left
-     */
-    private String getHint() {
-        Random rand = new Random();
-        int randPos, counter = 0;
-
-        do {
-            randPos = rand.nextInt(CODELENGTH);
-            counter++;
-        } while (this.hintsUsed[randPos] && counter <= (CODELENGTH/2));
-
-        if (counter > (CODELENGTH/2)) {
-            return "\nYou have ran out of hints!";
-        }
-
-        this.hintsUsed[randPos] = true;
-        return "\nHINT: Position " + (randPos + 1) + " is [ " + this.codeGame.getCode()[randPos] + " ]";
     }
 
     //</editor-fold>
