@@ -31,13 +31,9 @@ public class Game {
     private Players allPlayers;
     private char[] Guess, preChangeGuess;
     private SecretCode codeGame;
-    public int status = 0;
     private Scanner inputScanner;
-    private boolean[] hintsUsed;
 
     //</editor-fold>
-
-
     //<editor-fold desc="Constructors">
 
     //Testing Constructor
@@ -78,6 +74,7 @@ public class Game {
     //</editor-folds>
 
     //<editor-fold desc="Test Methods">
+
 
     public SecretCode getCodeGame() {
         return codeGame;
@@ -257,8 +254,22 @@ public class Game {
         }
     }
 
+    /*
+    Get the current guess
+
+    @return char array Guess
+     */
     public char[] getGuess() {
         return Guess;
+    }
+
+    /*
+    Gets solution from secret code class and returns
+
+    @return solution as String
+    */
+    private String showSolution(){
+        return Arrays.toString(this.codeGame.getCode());
     }
 
     /*
@@ -586,26 +597,7 @@ public class Game {
 
     //</editor-fold>
 
-    /*
-    Helper function for confirming the user wishes to give up
 
-    @return If the user wants to give up
-     */
-    private boolean giveUpConfirmation() {
-        while (true) {
-            System.out.println("\nAre you sure you want to give up? (y / n) >>>");
-
-            String userConfirm = inputScanner.nextLine();
-
-            if (userConfirm.compareTo("y") == 0) {
-                return true;
-            } else if (userConfirm.compareTo("n") == 0) {
-                return false;
-            } else {
-                System.out.println("\nError: Please choose y / n\n");
-            }
-        }
-    }
 
     //<editor-fold desc="Guess Actions">
 
@@ -943,17 +935,6 @@ public class Game {
 
     private boolean isNumeric(char[] str) {
         return str[0] > '0' && str[0] < '9';
-    }
-
-    //</editor-fold>
-
-    /*
-    Gets solution from secret code class and returns
-
-    @return solution as String
-    */
-    private String showSolution(){
-        return Arrays.toString(this.codeGame.getCode());
     }
 
 
