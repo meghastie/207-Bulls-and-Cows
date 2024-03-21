@@ -379,6 +379,7 @@ public class Game {
                     /save   - The current code is saved and can be reattempted later
                     /undo   - Reverts one of the guess positions back to its previous state
                     /submit - Submits the guess for comparison
+                    /hint   - Reveals one of the code's characters
                     /giveup - Forfeit game and return to menu
                 
                 """;
