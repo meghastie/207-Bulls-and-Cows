@@ -895,9 +895,7 @@ public class Game {
         }
     }
 
-    void requestCode(){
-
-    }
+    
 
     //<editor-fold desc="Guess Actions">
 
