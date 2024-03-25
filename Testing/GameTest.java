@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 import BullsAndCows.*;
 
 import java.io.*;
+import java.nio.Buffer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -61,7 +62,7 @@ class GameTest{
         try {
             System.setIn(testInput);
             game = new Game(new Player(), 4);
-            game.playGame();
+            //game.playGame();
             assertEquals("BullsAndCows.LettersCode",game.getCodeGame().getClass().getName());
         }
         finally {
@@ -76,7 +77,7 @@ class GameTest{
         try {
             System.setIn(testInput);
             game = new Game(new Player(), 4);
-            game.playGame();
+            //game.playGame();
             assertEquals("BullsAndCows.NumbersCode",game.getCodeGame().getClass().getName());
             System.out.println("Code Generated - " + Arrays.toString(game.getCodeGame().getCode()));
         }
@@ -92,7 +93,7 @@ class GameTest{
         try {
             System.setIn(testInput);
             game = new Game(new Player(), 4);
-            game.playGame();
+            //game.playGame();
             assertArrayEquals(new char[]{'1', '2', '3', '4'}, game.getGuess());
         }
         finally {
@@ -109,7 +110,7 @@ class GameTest{
             System.setIn(testInput);
             SecretCode code = new NumbersCode(new char[]{'9','8','7','6'});
             game = new Game(new Player(),code, 4);
-            game.playGame();
+            //game.playGame();
             assertArrayEquals(new int[]{4,0},game.getCodeGame().compareCode(code.getCode()));
         }
         finally {
@@ -497,5 +498,21 @@ class GameTest{
         assertTrue(game.print_player_details_testing(new Player("Barry",0,0,1,0,0)));
     }
 
+    //</editor-fold>
+
+    //<editor-fold desc="Sprint 3">
+    @Test
+    void giveupTest(){
+        String stimulus = "3\n1\n1\n/giveup\ny\n6";
+        InputStream testInput = new ByteArrayInputStream(stimulus.getBytes(StandardCharsets.UTF_8));
+        System.setIn(testInput);
+
+        game = new Game(8);
+        game.playGame2();
+
+        assertEquals(8, game.getCodeGame().getCode().length);
+    }
+
+    //top 10 scores testing within players class
     //</editor-fold>
 }

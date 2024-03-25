@@ -5,14 +5,21 @@ import java.util.Random;
 public abstract class SecretCode {
     final private char[] code;
     private boolean[] hintsUsed;
+    private int lastHintPos;
 
     SecretCode(char[] savedCode){
         this.code = savedCode;
-        this.hintsUsed = new boolean[]{false, false, false, false};
+        this.hintsUsed = new boolean[savedCode.length];
+        for(int i =0; i< savedCode.length; i++){
+            hintsUsed[i] = false;
+        }
     }
     SecretCode(int codeLength){
         this.code = generateCode(codeLength);
-        this.hintsUsed = new boolean[]{false, false, false, false};
+        this.hintsUsed = new boolean[codeLength];
+        for(int i =0; i< codeLength; i++){
+            hintsUsed[i] = false;
+        }
     }
 
     public char[] getCode() {
@@ -64,6 +71,15 @@ public abstract class SecretCode {
         }
 
         this.hintsUsed[randPos] = true;
+        lastHintPos = randPos;
         return "\nHINT: Position " + (randPos + 1) + " is [ " + this.code[randPos] + " ]";
+    }
+
+    public int getLastHintPos() {
+        return lastHintPos;
+    }
+
+    public boolean[] getHintsUsed() {
+        return hintsUsed;
     }
 }

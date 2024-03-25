@@ -216,6 +216,11 @@ public class Players {
     public Player[] getTopTen(){
         Player[] topTen = new Player[10];
 
+        if(allPlayers.isEmpty()){
+            System.out.println("Error: No players are stored");
+            return topTen;
+        }
+
         for(Player p : allPlayers){
             if(topTen[9] == null){
                 int i = 0;
